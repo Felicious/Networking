@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
 	PACKET *sendpck = (PACKET *)malloc(sizeof(PACKET));
 
 	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
-	outgoing->header.length = sizeof(data); //amt of bytes of data we have
+	outgoing->header.length = sizeof(sendpck); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
 	outgoing->data = argv[3];
 
