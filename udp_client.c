@@ -62,19 +62,19 @@ int main (int argc, char *argv[])
 
 	// receive
 	recvfrom (sock, response, 10, 0, NULL, NULL);
-			
+
 	int resent = 0; //resent # of times counter
 	//now you wanna check if you got the right message back
-	do {
+	while(outgoing->header.seq_ack != response->header.seq_ack){
 		if (resent == 3){
 			perror("Name of file was sent 3 times and failed ): \n");
 			exit(-1);
+		}else{
+			//if the seq # don't match, resend
+			perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
+			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 		}
-	}while(outgoing->header.seq_ack != response->header.seq_ack){
-		//if the seq # don't match, resend
-		perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
-		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 		resent++;
 	}
 
@@ -113,19 +113,20 @@ int main (int argc, char *argv[])
 		recvfrom (sock, response, 10, 0, NULL, NULL);
 			
 		int resent = 0; //resent # of times counter
+		
 		//now you wanna check if you got the right message back
-		do {
-			if (resent == 3){
-				perror("Packet was resent 3 times and failed ): \n");
-				exit(-1);
-			}
-		}while(outgoing->header.seq_ack != response->header.seq_ack){
+		while(outgoing->header.seq_ack != response->header.seq_ack){
+		if (resent == 3){
+			perror("Name of file was sent 3 times and failed ): \n");
+			exit(-1);
+		}else{
 			//if the seq # don't match, resend
-			perror("The sequence # of outgoing and received packets don't match!\n");
+			perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
 			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-			resent++;
 		}
+		resent++;
+	}
 
 		//move onto next state
 		seq_num = ((seq_num + 1) % 2);
