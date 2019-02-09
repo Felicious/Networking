@@ -55,8 +55,6 @@ int main (int argc, char *argv[])
 	//open output file
 	FILE *dest;
 	
-	
-
 	while(1){
 		recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
 		perror("Received file from client\n");
@@ -69,27 +67,31 @@ int main (int argc, char *argv[])
 		
 		int isreceivingfilename = 1;
 		//if this is the output file name
-		if(cksum != received->header.checksum){ //output file name and the checksum is incorrect
+		if(cksum != received->header.checksum)
+		{ //output file name and the checksum is incorrect
 			printf("Received checksum : %d\n", cksum);
 			printf("New checksum: %d\n", received->header.checksum);
 			//change the ack to opposite
 			ack = (received->header.seq_ack + 1) % 2; //change ack #
 			received->header.seq_ack = ack;
-			sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
-		}else if((dest == NULL) && (cksum == received->header.checksum)){ //this is the uncorrupted dest file name
+		}else if((dest == NULL) && (cksum == received->header.checksum))
+		{ //this is the uncorrupted dest file name
 			dest = fopen(received->data, "wb"); //receive output file name
 			if(!dest){
 				printf("File cannot be opened\n");
 				return 0;
-			sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
-		}else if((received->header.length == 0) && (dest != NULL)){ //empty packet indicating starting to send file
+			}
+		}else if((received->header.length == 0) && (dest != NULL))
+		{ //empty packet indicating starting to send file
 			isreceivingfilename = 0;
-		}else if((received->header.length == 0) && isreceivingfilename == 0){ //reached the end of the packet and file
+		}else if((received->header.length == 0) && isreceivingfilename == 0)
+		{ //reached the end of the packet and file
 			fclose(dest);
 			break;
 		}else if((dest != NULL) && (cksum == received->header.checksum)){ //the checksum is correct, then u write
 			fwrite(received->data, 1, received->header.length, dest);
 		}
+		sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
 	}
 
 	
