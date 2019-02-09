@@ -15,7 +15,7 @@
 int main (int argc, char *argv[])
 {
 	int sock, nBytes;
-	char buffer[1024];
+	char buffer[10];
 	struct sockaddr_in serverAddr, clientAddr;
 	struct sockaddr_storage serverStorage;
 	socklen_t addr_size, client_addr_size;
@@ -34,6 +34,10 @@ int main (int argc, char *argv[])
 	memset ((char *)serverAddr.sin_zero, '\0', sizeof (serverAddr.sin_zero));  
 	addr_size = sizeof (serverStorage);
 
+	//create packets
+	PACKET *received = (PACKET * )malloc(sizeof(PACKET));
+	PACKET *give_to_client = (PACKET * )malloc(sizeof(PACKET));
+
 	// create socket
 	if ((sock = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
@@ -48,10 +52,20 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
+	//open output file
+	FILE *dest;
+	dest = fopen("output.txt", "wb");
+	if(!dest){
+		printf("File cannot be opened\n");
+		return 0;
+	}
+
 	while (1)
 	{
 		// receive  datagrams
-		nBytes = recvfrom (sock, buffer, 1024, 0, (struct sockaddr *)&serverStorage, &addr_size);
+		recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size);
+		perror("Received file from client\n");
+		
 
 		// convert message
 		for (i = 0; i < nBytes - 1; i++)

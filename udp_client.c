@@ -4,8 +4,10 @@
 
 #include <stdio.h>
 #include <sys/socket.h>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <"header.h">
 
 /***********
  *  main
@@ -13,7 +15,7 @@
 int main (int argc, char *argv[])
 {
 	int sock, portNum, nBytes;
-	char buffer[1024];
+	char buffer[10];
 	struct sockaddr_in serverAddr;
 	socklen_t addr_size;
 
@@ -24,11 +26,18 @@ int main (int argc, char *argv[])
 	}
 
 	// configure address
+	//when sending packet, 1st parameter is port #
+	// 2nd is IP address
+	// 3rd is source file name
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons (atoi (argv[1]));
 	inet_pton (AF_INET, argv[2], &serverAddr.sin_addr.s_addr);
 	memset (serverAddr.sin_zero, '\0', sizeof (serverAddr.sin_zero));  
 	addr_size = sizeof serverAddr;
+
+	//create packets
+	PACKET *outgoing = (PACKET * )malloc(sizeof(PACKET));
+	PACKET *response = (PACKET * )malloc(sizeof(PACKET));
 
 	/*Create UDP socket*/
     if ((sock = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -37,40 +46,92 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
+	//send file name to server
+	PACKET *sendpck = (PACKET *)malloc(sizeof(PACKET));
+	char data[10] = argv[3];
 
-	while (1)
+	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
+	outgoing->header.length = sizeof(data); //amt of bytes of data we have
+	outgoing->header.checksum = 0;
+	outgoing.data = data;
+
+	//checking checksum with yourself
+	outgoing->header.checksum = calc_checksum(outgoing, nBytes);
+	
+	//now you're ready to send!
+	sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+
+	// receive
+	recvfrom (sock, response, 10, 0, NULL, NULL);
+			
+	int resent = 0; //resent # of times counter
+	//now you wanna check if you got the right message back
+	do {
+		if (resent == 3){
+			perror("Name of file was sent 3 times and failed ): \n");
+			exit(-1);
+		}
+	}while(outgoing->header.seq_ack != response->header.seq_ack){
+		//if the seq # don't match, resend
+		perror("Name of file: The sequence # of outgoing and received packets don't match!\n")
+		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+		resent++;
+	}
+
+	perror("Name of input file has been sent to server successfully\n");
+
+	FILE *src;
+	src = fopen(argv[3], "rb");
+	if(!src){
+		printf("File cannot be opened\n");
+		return 0;
+	}
+
+	int seq_num = 0;
+	while (!feof(src))
 	{
 		//want to parse packet and prepare it before sending
 
-		printf ("String:");
-
 		//open the file and store the message into the buffer
-		FILE *src;
-		src = fopen(argv[1], "rb");
-		if(!src){
-			printf("File cannot be opened\n");
-			return 0;
-		}
+		//read 10 bytes at a time and put it into packet
+		size_t sz = fread(buffer, 1, 10, src);
+		nBytes = sz + 1;
 
-		//read 1024 bytes at a time and put it into packet
-		while(!feof(src)){
-			size_t sz = fread(buffer, 1, 1024, src);
-			nBytes = strlen (buffer) + 1;
+		//initialize the packet header values
+		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
+		outgoing->header.length = sz; //amt of bytes of data we have
+		outgoing->header.checksum = 0;
+		outgoing.data = buffer;
 
-		}
+		//checking checksum with yourself
+		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 
-
-		
-    
-		// send
-		printf ("Sending: %s", buffer);
-		sendto (sock, buffer, nBytes, 0, (struct sockaddr *)&serverAddr, addr_size);
+		//now you're ready to send!
+		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 		// receive
-		nBytes = recvfrom (sock, buffer, 1024, 0, NULL, NULL);
-		printf ("Received: %s\n", buffer);
+		recvfrom (sock, response, 10, 0, NULL, NULL);
+			
+		int resent = 0; //resent # of times counter
+		//now you wanna check if you got the right message back
+		do {
+			if (resent == 3){
+				perror("Packet was resent 3 times and failed ): \n");
+				exit(-1);
+			}
+		}while(outgoing->header.seq_ack != response->header.seq_ack){
+			//if the seq # don't match, resend
+			perror("The sequence # of outgoing and received packets don't match!\n")
+			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+			resent++;
+		}
 
+		//move onto next state
+		seq_num = ((seq_num + 1) % 2);
 	}
-
+	
+	fclose(src);
 	return 0;
 }
