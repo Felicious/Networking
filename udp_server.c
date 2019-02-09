@@ -36,6 +36,7 @@ int main (int argc, char *argv[])
 	addr_size = sizeof (serverStorage);
 
 	//create packets
+	PACKET *output_file = (PACKET * )malloc(sizeof(PACKET));
 	PACKET *received = (PACKET * )malloc(sizeof(PACKET));
 
 	// create socket
@@ -54,8 +55,29 @@ int main (int argc, char *argv[])
 
 	//open output file
 	FILE *dest;
-	recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
+	recvfrom (sock, output_file, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
 	perror("Received file from client\n");
+
+	//now check if the output file was corrupted
+	while(strlen(output_file->data) > 0){
+		int cksum = output_file->header.checksum;
+
+		output_file->header.checksum = 0;
+		output_file->header.checksum = calc_checksum(output_file, sizeof(HEADER) + output_file->header.length);
+
+		//if the checksums are not the same
+		if(cksum != output_file->header.checksum){
+			printf("Received checksum : %d\n", cksum);
+			printf("New checksum: %d\n", output_file->header.checksum);
+			//change the ack to opposite
+			output_file->header.seq_ack = (output_file->header.seq_ack + 1) % 2;
+		}
+		sendto (sock, output_file, sizeof(output_file), 0, (struct sockaddr *)&serverAddr, addr_size);
+	}
+
+	dest = fopen(output_file->data, "wb"); //receive output file name
+
+	recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size);
 
 	//while we have incoming packets from client
 	while(strlen(received->data) > 0){
@@ -71,15 +93,12 @@ int main (int argc, char *argv[])
 			//change the ack to opposite
 			received->header.seq_ack = (received->header.seq_ack + 1) % 2;
 		}else{ //if the checksums are the same, write to file 
-			if(dest == NULL)
-				dest = fopen(received->data, "wb"); //receive output file name
 			if(!dest){
 				printf("File cannot be opened\n");
 				return 0;
 			}
 			fwrite(received->data, 1, received->header.length, dest);
 		}
-
 
 		sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
 
