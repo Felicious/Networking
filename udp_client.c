@@ -52,7 +52,8 @@ int main (int argc, char *argv[])
 	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
 	outgoing->header.length = sizeof(sendpck); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
-	outgoing->data = argv[3];
+	//outgoing->data = argv[3];
+	memcpy(outgoing->data, argv[3], 10);
 
 	//checking checksum with yourself
 	outgoing->header.checksum = calc_checksum(outgoing, nBytes);
@@ -94,14 +95,13 @@ int main (int argc, char *argv[])
 
 		//open the file and store the message into the buffer
 		//read 10 bytes at a time and put it into packet
-		size_t sz = fread(buffer, 1, 10, src);
+		size_t sz = fread(outgoing->data, 1, 10, src);
 		nBytes = sz + 1;
 
 		//initialize the packet header values
 		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
 		outgoing->header.length = sz; //amt of bytes of data we have
 		outgoing->header.checksum = 0;
-		outgoing->data = buffer;
 
 		//checking checksum with yourself
 		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
