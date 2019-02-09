@@ -48,12 +48,13 @@ int main (int argc, char *argv[])
 
 	//send file name to server
 	PACKET *sendpck = (PACKET *)malloc(sizeof(PACKET));
-	char data[10] = argv[3];
+	char data[10];
+	data = argv[3];
 
 	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
 	outgoing->header.length = sizeof(data); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
-	outgoing.data = data;
+	outgoing->data = data;
 
 	//checking checksum with yourself
 	outgoing->header.checksum = calc_checksum(outgoing, nBytes);
