@@ -94,7 +94,7 @@ int main (int argc, char *argv[])
 	// receive
 	recvfrom (sock, response, 10, 0, NULL, NULL);
 
-	int resent = 0; //resent # of times counter
+	resent = 0; //resent # of times counter
 	//now you wanna check if you got the right message back
 	while(outgoing->header.seq_ack != response->header.seq_ack){
 		if (resent == 3){
