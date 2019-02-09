@@ -95,8 +95,7 @@ int main (int argc, char *argv[])
 
 		//open the file and store the message into the buffer
 		//read 10 bytes at a time and put it into packet
-		size_t sz = fread(outgoing->data, 1, 10, src);
-		nBytes = sz + 1;
+		sz = fread(outgoing->data, 1, 10, src);
 
 		//initialize the packet header values
 		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
