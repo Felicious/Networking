@@ -48,13 +48,11 @@ int main (int argc, char *argv[])
 
 	//send file name to server
 	PACKET *sendpck = (PACKET *)malloc(sizeof(PACKET));
-	char data[10];
-	data = argv[3];
 
 	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
 	outgoing->header.length = sizeof(data); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
-	outgoing->data = data;
+	outgoing->data = argv[3];
 
 	//checking checksum with yourself
 	outgoing->header.checksum = calc_checksum(outgoing, nBytes);
@@ -74,7 +72,7 @@ int main (int argc, char *argv[])
 		}
 	}while(outgoing->header.seq_ack != response->header.seq_ack){
 		//if the seq # don't match, resend
-		perror("Name of file: The sequence # of outgoing and received packets don't match!\n")
+		perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
 		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 		resent++;
@@ -103,7 +101,7 @@ int main (int argc, char *argv[])
 		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
 		outgoing->header.length = sz; //amt of bytes of data we have
 		outgoing->header.checksum = 0;
-		outgoing.data = buffer;
+		outgoing->data = buffer;
 
 		//checking checksum with yourself
 		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
@@ -123,7 +121,7 @@ int main (int argc, char *argv[])
 			}
 		}while(outgoing->header.seq_ack != response->header.seq_ack){
 			//if the seq # don't match, resend
-			perror("The sequence # of outgoing and received packets don't match!\n")
+			perror("The sequence # of outgoing and received packets don't match!\n");
 			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 			resent++;
