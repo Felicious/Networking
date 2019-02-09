@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <stdlib.h>
+#include "header.h"
 
 /********************
  * main
@@ -36,7 +37,6 @@ int main (int argc, char *argv[])
 
 	//create packets
 	PACKET *received = (PACKET * )malloc(sizeof(PACKET));
-	PACKET *give_to_client = (PACKET * )malloc(sizeof(PACKET));
 
 	// create socket
 	if ((sock = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -54,25 +54,35 @@ int main (int argc, char *argv[])
 
 	//open output file
 	FILE *dest;
-	dest = fopen("output.txt", "wb");
+	recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
+	perror("Received file from client\n");
+
+	dest = fopen(received->data, "wb"); //receive output file name
 	if(!dest){
 		printf("File cannot be opened\n");
 		return 0;
 	}
 
-	while (1)
-	{
-		// receive  datagrams
-		recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size);
-		perror("Received file from client\n");
-		
+	//while we have incoming packets from client
+	while(strlen(received->data) > 0){
+		int cksum = received->header.checksum;
 
-		// convert message
-		for (i = 0; i < nBytes - 1; i++)
-			buffer[i] = toupper (buffer[i]);
+		received->header.checksum = 0;
+		received->header.checksum = calc_checksum(received, sizeof(HEADER) + outgoing->header.length);
 
-		// send message back
-		sendto (sock, buffer, nBytes, 0, (struct sockaddr *)&serverStorage, addr_size);
+		//if the checksums are not the same
+		if(cksum != received->header.checksum){
+			printf("Received checksum : %d\n", cksum);
+			printf("New checksum: %d\n", received->header.checksum);
+			//change the ack to opposite
+			received->header.seq_ack = (received->header.seq_ack + 1) % 2;
+		}else{ //if the checksums are the same, write to file 
+			fwrite()
+		}
+
+
+		sendto (sock, received, nBytes, 0, (struct sockaddr *)&serverStorage, addr_size);
+
 	}
 
 	return 0;

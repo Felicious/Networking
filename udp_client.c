@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
 	outgoing->header.length = sizeof(sendpck); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
 	//outgoing->data = argv[3];
-	memcpy(outgoing->data, argv[3], 10);
+	memcpy(outgoing->data, argv[4], 10);
 
 	//checking checksum with yourself
 	outgoing->header.checksum = calc_checksum(outgoing, nBytes);
