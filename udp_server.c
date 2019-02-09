@@ -103,6 +103,7 @@ int main (int argc, char *argv[])
 		sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
 
 	}
+	fclose(output_file->data);
 
 	return 0;
 }
