@@ -19,7 +19,7 @@ int main (int argc, char *argv[])
 	struct sockaddr_in serverAddr;
 	socklen_t addr_size;
 
-	if (argc != 4)
+	if (argc != 5)
 	{
 		printf ("need the port number and machine\n");
 		return 1;
@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
 	outgoing->header.length = sizeof(sendpck); //amt of bytes of data we have
 	outgoing->header.checksum = 0;
 	//outgoing->data = argv[3];
-	memcpy(outgoing->data, argv[4], 10);
+	memcpy(outgoing->data, argv[3], 10);
 
 /*
 	//checking checksum with yourself
