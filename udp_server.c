@@ -77,7 +77,7 @@ int main (int argc, char *argv[])
 				printf("File cannot be opened\n");
 				return 0;
 			}
-			fwrite(dest, received->header.length, received->data);
+			fwrite(received->data, 1, received->header.length, dest);
 		}
 
 
