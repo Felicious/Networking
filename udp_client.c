@@ -55,7 +55,7 @@ int main (int argc, char *argv[])
 	//outgoing->data = argv[3];
 	memcpy(outgoing->data, argv[3], 10);
 
-/*
+	//check seg fault up to here
 	//checking checksum with yourself
 	outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 	
@@ -131,7 +131,7 @@ int main (int argc, char *argv[])
 		//move onto next state
 		seq_num = ((seq_num + 1) % 2);
 	}
-*/	
-	//fclose(src);
+
+	fclose(src);
 	return 0;
 }
