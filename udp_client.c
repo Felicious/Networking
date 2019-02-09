@@ -19,7 +19,7 @@ int main (int argc, char *argv[])
 	struct sockaddr_in serverAddr;
 	socklen_t addr_size;
 
-	if (argc != 3)
+	if (argc != 4)
 	{
 		printf ("need the port number and machine\n");
 		return 1;
