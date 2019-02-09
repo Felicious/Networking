@@ -57,18 +57,12 @@ int main (int argc, char *argv[])
 	recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
 	perror("Received file from client\n");
 
-	dest = fopen(received->data, "wb"); //receive output file name
-	if(!dest){
-		printf("File cannot be opened\n");
-		return 0;
-	}
-
 	//while we have incoming packets from client
 	while(strlen(received->data) > 0){
 		int cksum = received->header.checksum;
 
 		received->header.checksum = 0;
-		received->header.checksum = calc_checksum(received, sizeof(HEADER) + outgoing->header.length);
+		received->header.checksum = calc_checksum(received, sizeof(HEADER) + received->header.length);
 
 		//if the checksums are not the same
 		if(cksum != received->header.checksum){
@@ -77,11 +71,17 @@ int main (int argc, char *argv[])
 			//change the ack to opposite
 			received->header.seq_ack = (received->header.seq_ack + 1) % 2;
 		}else{ //if the checksums are the same, write to file 
-			fwrite()
+			if(dest == NULL)
+				dest = fopen(received->data, "wb"); //receive output file name
+			if(!dest){
+				printf("File cannot be opened\n");
+				return 0;
+			}
+			fwrite(dest, received->header.length, received->data);
 		}
 
 
-		sendto (sock, received, nBytes, 0, (struct sockaddr *)&serverStorage, addr_size);
+		sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
 
 	}
 
