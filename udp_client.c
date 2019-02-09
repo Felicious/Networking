@@ -14,6 +14,7 @@
  ***********/
 int main (int argc, char *argv[])
 {
+	perror("this is the top of server\n");
 	int sock, portNum, nBytes;
 	char buffer[10];
 	struct sockaddr_in serverAddr;
