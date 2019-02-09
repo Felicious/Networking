@@ -59,6 +59,7 @@ int main (int argc, char *argv[])
 	outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
 
 	//now you're ready to send!
+	perror("Sending output file! \n");
 	sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 	// receive
@@ -112,6 +113,7 @@ int main (int argc, char *argv[])
 
 	//FINALLY READY TO SEND THE FILE THROUGH PACKETS
 	//OH MY GOD
+	perror("ready to send files? (: \n");
 	FILE *src;
 	src = fopen(argv[3], "rb");
 	if(!src){
