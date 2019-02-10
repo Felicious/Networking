@@ -36,147 +36,147 @@ int main (int argc, char *argv[])
 	memset (serverAddr.sin_zero, '\0', sizeof (serverAddr.sin_zero));  
 	addr_size = sizeof serverAddr;
 
-	//create packets
-	PACKET *outgoing = (PACKET * )malloc(sizeof(PACKET));
-	PACKET *response = (PACKET * )malloc(sizeof(PACKET));
-
 	/*Create UDP socket*/
     if ((sock = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
 		printf ("socket error\n");
 		return 1;
 	}
+	
 
-	//send file name to server
-	PACKET *sendpck = (PACKET *)malloc(sizeof(PACKET));
-
-	outgoing->header.seq_ack = 0; //seq number is 0 at first (will only be 0 or 1)
-	outgoing->header.length = sizeof(sendpck); //amt of bytes of data we have
-	outgoing->header.checksum = 0;
-	//outgoing->data = argv[3];
-	memcpy(outgoing->data, argv[4], 10);
-
-	//checking checksum with yourself
-	outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-
-	//now you're ready to send!
-	perror("Sending output file! \n");
-	sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-
-	// receive
-	recvfrom (sock, response, 10, 0, NULL, NULL);
-
-	int resent = 0; //resent # of times counter
-	//now you wanna check if you got the right message back
-	while(outgoing->header.seq_ack != response->header.seq_ack){
-		if (resent == 3){
-			perror("Name of file was sent 3 times and failed ): \n");
-			exit(-1);
-		}else{
-			//if the seq # don't match, resend
-			perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
-			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-		}
-		resent++;
-	}
-
-	perror("Name of input file has been sent to server successfully\n");
-
-	//send empty packet to server
-	//once you're done sending the output
-	outgoing->header.length = 0;
-	memset(outgoing->data, '\0', sizeof(outgoing->data));
-	outgoing->header.checksum = 0;
-	outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-
-	//now you're ready to send!
-	sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-
-	// receive
-	recvfrom (sock, response, 10, 0, NULL, NULL);
-
-	resent = 0; //resent # of times counter
-	//now you wanna check if you got the right message back
-	while(outgoing->header.seq_ack != response->header.seq_ack){
-		if (resent == 3){
-			perror("Name of file was sent 3 times and failed ): \n");
-			exit(-1);
-		}else{
-			//if the seq # don't match, resend
-			perror("Sending the empty file: The sequence # of outgoing and received packets don't match!\n");
-			outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-			sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-		}
-		resent++;
-	}
-
-
-	//FINALLY READY TO SEND THE FILE THROUGH PACKETS
-	//OH MY GOD
-	perror("ready to send files? (: \n");
-	FILE *src;
+	FILE *src; //will be used to open the source file at first
 	src = fopen(argv[3], "rb");
 	if(!src){
 		printf("File cannot be opened\n");
 		return 0;
 	}
 
+	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
+
+	PACKET *outgoing = (PACKET *)malloc(sizeof(PACKET)); //all outgoing data will be sent here
+	int resent = 0;
 	int seq_num = 0;
-	while (!feof(src))
-	{
-		//want to parse packet and prepare it before sending
+	
+	//stores the seq no. and checksum of the outgoing file 
+	//later, outgoing will indicate the response
+	int ack;
+	int cksum;
+	int sending_empty_packet = 0;
+	
+	while(1){
 
-		//open the file and store the message into the buffer
-		//read 10 bytes at a time and put it into packet
-		size_t sz = fread(outgoing->data, 1, 10, src);
-
-		//initialize the packet header values
+		//initializing packet
 		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
-		outgoing->header.length = sz; //amt of bytes of data we have
-		outgoing->header.checksum = 0;
+		ack = outgoing->header.seq_ack;
+		outgoing->header.checksum = 0; //later initialze checksum to random number
 
 		//checking checksum with yourself
 		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+		cksum = outgoing->header.checksum;
 
-		//now you're ready to send!
+		
+		if((read_file_name)&&(sending_empty_packet == 0)) //if you're trying to read the file name
+		{ 
+			//copy the 4th parameter(which contains the output file name)
+			memcpy(outgoing->data, argv[4], 10);
+			outgoing->header.length = strlen(argv[4]);
+		}			
+		else if((sending_empty_packet == 0) && read_file_name == 0)  //save content of file
+		{
+
+			//open the file and store the message into the buffer
+			//read 10 bytes at a time and put it into packet
+			outgoing->header.length = fread(outgoing->data, 1, 10, src);
+		}
+		else //if(sending_empty_packet == 1) 
+		//need to send an empty packet after finish sending the output file name
+		{
+			outgoing->header.length = 0;
+			sending_empty_packet = 0;
+		}
+		
+		//if the size is 0, means we reached the end of the msg
+		//we're gonna send an empty packet
+		if(outgoing->header.length == 0)
+		{
+			memset(outgoing->data, '\0', sizeof(outgoing->data));
+		}
+
+		
+
+
+		//done initializing packet and header values
+		perror("preparing to send packet\n");
 		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 		// receive
-		recvfrom (sock, response, 10, 0, NULL, NULL);
-			
-		int resent = 0; //resent # of times counter
+		recvfrom (sock, outgoing, 10, 0, NULL, NULL);
+
+		if(resent == 3){
+			printf("Packet was resent 3 times and failed ):\n");
+			if(read_file_name == 1)
+				printf("The offending file is the output file name ):<\n");
+			else
+				printf("The offending file is the msg O:<\n");
+			break;
+		}
 		
-		//now you wanna check if you got the right message back
-		while(outgoing->header.seq_ack != response->header.seq_ack){
-			if (resent == 3){
-				perror("Name of file was sent 3 times and failed ): \n");
-				exit(-1);
-			}else{
-				//if the seq # don't match, resend
-				perror("Name of file: The sequence # of outgoing and received packets don't match!\n");
-				outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-				sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-			}
+		if(ack != outgoing->header.seq_ack)
+		{ //seq #'s don't match (for both filename and packet contents)
+			//resend the file
 			resent++;
-		}	
+			printf("the acknowledgement numbers dont match /: \n");
+			seq_num = ((outgoing->header.seq_ack + 1) % 2);
+			continue;
+		}
+
+		//if the code reached here, that means the ack #'s match. 
+		//it would have continued to next loop or broke if it didnt
+
+		if(cksum == outgoing->header.checksum){
+			resent = 0;
+			//a packet was sent successfully with no corruptions + mismatched ack #!
 
 
-		//move onto next state
-		seq_num = ((seq_num + 1) % 2);
-	}
+			if((read_file_name == 0) && (outgoing->header.length > 0))
+			{
+				//yay the msg can be sent!
+			}
+			else if((read_file_name == 1)&&(sending_empty_packet == 0))
+			{ //means we just successfully sent the outputfilename
+				
+				//next, we want to send an empty packet so flag it
+				sending_empty_packet = 1;
+
+			}
+			else if((read_file_name == 1)&&(sending_empty_packet == 1))
+			{
+				//currently sending the empty packet to exit out of reading the output name
+				read_file_name = 0;
+
+				//next we wanna make sure we're NOT sending an empty packet and start sending the msg 
+				sending_empty_packet = 0;
+			}
+			else if((read_file_name == 0) && (outgoing->header.length == 0))
+			{ 
+				printf("WE'RE FINALLY DONE HOLY SHIT!!!!!\n");
+				break;
+			}
+			
+
+		}
+		//there's corruption. should send again ):
+		else
+		{
+			printf("checksums dont match! Outgoing: %d", ", versus Response: %d", chksum, outgoing->header.checksum);
+			resent++;
+		}
+
+		seq_num = ((outgoing->header.seq_ack + 1) % 2);
+
+	} //END OF WHILE LOOP (FINALLY) 
 
 	fclose(src);
-
-	//after reach the end of the input file, send empty packet to server so it knows when to close
-	//send empty packet to server
-	//once you're done sending the output
-	outgoing->header.length = 0;
-	memset(outgoing->data, '\0', sizeof(outgoing->data));
-	outgoing->header.checksum = 0;
-	outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-
-	//now you're ready to send!
-	sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+	
 	return 0;
 }
