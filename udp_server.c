@@ -52,49 +52,59 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
+	int ack;
+	int cksum;
+
 	//open output file
 	FILE *dest;
 	
-	while(1){
+	while(1)
+	{
 		recvfrom (sock, received, 10, 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
 		perror("Received file from client\n");
 
-		int cksum = received->header.checksum;
-		int ack;
+		cksum = received->header.checksum;
 
 		received->header.checksum = 0;
 		received->header.checksum = calc_checksum(received, sizeof(HEADER) + received->header.length);
 		
 		int isreceivingfilename = 1;
-		//if this is the output file name
+		//if this is the output file 
+
 		if(cksum != received->header.checksum)
-		{ //output file name and the checksum is incorrect
+		{  //checksum is incorrect
 			printf("Received checksum : %d\n", cksum);
 			printf("New checksum: %d\n", received->header.checksum);
 			//change the ack to opposite
 			ack = (received->header.seq_ack + 1) % 2; //change ack #
 			received->header.seq_ack = ack;
-		}else if((dest == NULL) && (cksum == received->header.checksum))
-		{ //this is the uncorrupted dest file name
-			dest = fopen(received->data, "wb"); //receive output file name
-			if(!dest){
-				printf("File cannot be opened\n");
-				return 0;
-			}
-		}else if((received->header.length == 0) && (dest != NULL))
-		{ //empty packet indicating starting to send file
-			isreceivingfilename = 0;
-		}else if((received->header.length == 0) && isreceivingfilename == 0)
-		{ //reached the end of the packet and file
-			fclose(dest);
-			break;
-		}else if((dest != NULL) && (cksum == received->header.checksum)){ //the checksum is correct, then u write
-			fwrite(received->data, 1, received->header.length, dest);
 		}
+		else //if (cksum == received->header.checksum)
+		{
+			if((dest != NULL) && (received->header.length > 0) && (isreceivingfilename == 0))
+			{ //received file is uncorrupted and we're ready to write into the file
+				fwrite(received->data, 1, received->header.length, dest); //write into file
+			}
+			else if ((dest == NULL) && (received->header.length > 0) && (isreceivingfilename)) //haven't opened the file yet! 
+			{ // just received uncorrupted output file name and make a new file called that!
+				dest = fopen(received->data, "wb"); 
+				if(!dest){ 
+					printf("File cannot be opened\n");
+					return 0;
+				} //opened the file
+			}
+			else if((dest != NULL) && (received->header.length == 0) && (isreceivingfilename))
+			{ //we just received the empty packet indicating that we're gonna start writing to the file now 
+				isreceivingfilename = 0;
+			}
+			else if((dest != NULL) && (received->header.length == 0) && (isreceivingfilename == 0))
+			{
+				printf("Yay we finished reading ALL packets from the client :D\n");
+				fclose(dest);
+			}
+		}
+		//regardless, the server will send something back to the client
 		sendto (sock, received, sizeof(received), 0, (struct sockaddr *)&serverStorage, addr_size);
 	}
-
-	
-
 	return 0;
 }

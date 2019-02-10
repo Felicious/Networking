@@ -16,7 +16,6 @@ int main (int argc, char *argv[])
 {
 	perror("this is the top of server\n");
 	int sock, portNum, nBytes;
-	char buffer[10];
 	struct sockaddr_in serverAddr;
 	socklen_t addr_size;
 
@@ -43,15 +42,12 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 	
-
 	FILE *src; //will be used to open the source file at first
 	src = fopen(argv[3], "rb");
 	if(!src){
 		printf("File cannot be opened\n");
 		return 0;
 	}
-
-	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
 
 	PACKET *outgoing = (PACKET *)malloc(sizeof(PACKET)); //all outgoing data will be sent here
 	int resent = 0;
@@ -61,7 +57,9 @@ int main (int argc, char *argv[])
 	//later, outgoing will indicate the response
 	int ack;
 	int cksum;
-	int sending_empty_packet = 0;
+	//flags
+	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
+	int sending_empty_packet = 0; //flag indicating whether we're sending an empty packet (initialized to no)
 	
 	while(1){
 
@@ -83,29 +81,23 @@ int main (int argc, char *argv[])
 		}			
 		else if((sending_empty_packet == 0) && read_file_name == 0)  //save content of file
 		{
-
 			//open the file and store the message into the buffer
-			//read 10 bytes at a time and put it into packet
-			outgoing->header.length = fread(outgoing->data, 1, 10, src);
+			outgoing->header.length = fread(outgoing->data, 1, 10, src); //store stuff directly into packet data
 		}
 		else //if(sending_empty_packet == 1) 
 		//need to send an empty packet after finish sending the output file name
 		{
 			outgoing->header.length = 0;
-			sending_empty_packet = 0;
 		}
 		
-		//if the size is 0, means we reached the end of the msg
+		//if the size is 0, means we reached the end of the msg or we wanna send an empty packet (flag)
 		//we're gonna send an empty packet
 		if(outgoing->header.length == 0)
 		{
 			memset(outgoing->data, '\0', sizeof(outgoing->data));
 		}
 
-		
-
-
-		//done initializing packet and header values
+		//DONE INITIALIZING PACKET HEADER VALUES!
 		perror("preparing to send packet\n");
 		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
@@ -133,12 +125,12 @@ int main (int argc, char *argv[])
 		//if the code reached here, that means the ack #'s match. 
 		//it would have continued to next loop or broke if it didnt
 
+		//a packet was sent successfully with no corruptions + mismatched ack #!
 		if(cksum == outgoing->header.checksum){
 			resent = 0;
-			//a packet was sent successfully with no corruptions + mismatched ack #!
-
-
-			if((read_file_name == 0) && (outgoing->header.length > 0))
+			
+			//if these conditions apply, then the msg from packet was sent successfully
+			if((read_file_name == 0) && (sending_empty_packet == 0))
 			{
 				//yay the msg can be sent!
 			}
@@ -147,8 +139,7 @@ int main (int argc, char *argv[])
 				
 				//next, we want to send an empty packet so flag it
 				sending_empty_packet = 1;
-
-			}
+			} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
 			else if((read_file_name == 1)&&(sending_empty_packet == 1))
 			{
 				//currently sending the empty packet to exit out of reading the output name
@@ -162,11 +153,8 @@ int main (int argc, char *argv[])
 				printf("WE'RE FINALLY DONE HOLY SHIT!!!!!\n");
 				break;
 			}
-			
-
 		}
-		//there's corruption. should send again ):
-		else
+		else //else: there's corruption. should send again ):
 		{
 			printf("checksums dont match! Outgoing: %d", ", versus Response: %d", chksum, outgoing->header.checksum);
 			resent++;
