@@ -64,13 +64,7 @@ int main (int argc, char *argv[])
 	while(1){
 
 		//initializing packet
-		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
-		ack = outgoing->header.seq_ack;
-		outgoing->header.checksum = 0; //later initialze checksum to random number
-
-		//checking checksum with yourself
-		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-		cksum = outgoing->header.checksum;
+		//
 
 		
 		if((read_file_name)&&(sending_empty_packet == 0)) //if you're trying to read the file name
@@ -78,17 +72,29 @@ int main (int argc, char *argv[])
 			//copy the 4th parameter(which contains the output file name)
 			memcpy(outgoing->data, argv[4], 10);
 			outgoing->header.length = strlen(argv[4]);
+			printf("Sending file name:  %s\n", outgoing->data);
 		}			
 		else if((sending_empty_packet == 0) && read_file_name == 0)  //save content of file
 		{
 			//open the file and store the message into the buffer
-			outgoing->header.length = fread(outgoing->data, 1, 10, src); //store stuff directly into packet data
+			outgoing->header.length = fread(outgoing->data, 1, sizeof(outgoing->data), src); //store stuff directly into packet data
+			printf("sending the message to svr:%s \n", outgoing->data);
 		}
 		else //if(sending_empty_packet == 1) 
 		//need to send an empty packet after finish sending the output file name
 		{
 			outgoing->header.length = 0;
 		}
+		
+		outgoing->header.seq_ack = seq_num; //seq number is 0 at first (will only be 0 or 1)
+		outgoing->header.seq_ack;
+		outgoing->header.checksum = 0; //later initialze checksum to random number
+
+		//checking checksum with yourself
+		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+		cksum = outgoing->header.checksum;
+
+		
 		
 		//if the size is 0, means we reached the end of the msg or we wanna send an empty packet (flag)
 		//we're gonna send an empty packet
@@ -99,10 +105,10 @@ int main (int argc, char *argv[])
 
 		//DONE INITIALIZING PACKET HEADER VALUES!
 		perror("preparing to send packet\n");
-		sendto (sock, outgoing, sizeof(outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+		sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 		// receive
-		recvfrom (sock, outgoing, 10, 0, NULL, NULL);
+		recvfrom (sock, outgoing, sizeof(*outgoing), 0, NULL, NULL);
 
 		if(resent == 3){
 			printf("Packet was resent 3 times and failed ):\n");
@@ -113,12 +119,11 @@ int main (int argc, char *argv[])
 			break;
 		}
 		
-		if(ack != outgoing->header.seq_ack)
+		if(seq_num != outgoing->header.seq_ack)
 		{ //seq #'s don't match (for both filename and packet contents)
 			//resend the file
 			resent++;
 			printf("the acknowledgement numbers dont match /: \n");
-			seq_num = ((outgoing->header.seq_ack + 1) % 2);
 			continue;
 		}
 
@@ -126,38 +131,25 @@ int main (int argc, char *argv[])
 		//it would have continued to next loop or broke if it didnt
 
 		//a packet was sent successfully with no corruptions + mismatched ack #!
-		if(cksum == outgoing->header.checksum){
-			resent = 0;
+		resent = 0;
 			
-			//if these conditions apply, then the msg from packet was sent successfully
-			if((read_file_name == 0) && (sending_empty_packet == 0))
-			{
-				//yay the msg can be sent!
-			}
-			else if((read_file_name == 1)&&(sending_empty_packet == 0))
-			{ //means we just successfully sent the outputfilename
-				
-				//next, we want to send an empty packet so flag it
-				sending_empty_packet = 1;
-			} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
-			else if((read_file_name == 1)&&(sending_empty_packet == 1))
-			{
-				//currently sending the empty packet to exit out of reading the output name
-				read_file_name = 0;
-
-				//next we wanna make sure we're NOT sending an empty packet and start sending the msg 
-				sending_empty_packet = 0;
-			}
-			else if((read_file_name == 0) && (outgoing->header.length == 0))
-			{ 
-				printf("WE'RE FINALLY DONE HOLY SHIT!!!!!\n");
-				break;
-			}
-		}
-		else //else: there's corruption. should send again ):
+		//if these conditions apply, then the msg from packet was sent successfully
+		if((read_file_name == 0) && (sending_empty_packet == 0)&&(outgoing->header.length > 0))
 		{
-			printf("checksums dont match! Outgoing: %d", ", versus Response: %d", chksum, outgoing->header.checksum);
-			resent++;
+			printf("Yay~ sending msg of size: %d\n", outgoing->header.length);
+	
+		}
+		else if((read_file_name == 1)&&(sending_empty_packet == 0))
+		{ //means we just successfully sent the outputfilename
+		
+			//next, we want to send an empty packet so flag it
+			read_file_name = 0;
+		} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
+		else if((read_file_name == 0) && (outgoing->header.length == 0))
+		{ 
+			printf("WE'RE FINALLY DONE HOLY SHIT!!!!!\n");
+			sending_empty_packet = 1;
+			break;
 		}
 
 		seq_num = ((outgoing->header.seq_ack + 1) % 2);
