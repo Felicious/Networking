@@ -60,6 +60,8 @@ int main (int argc, char *argv[])
 	//flags
 	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
 	int sending_empty_packet = 0; //flag indicating whether we're sending an empty packet (initialized to no)
+
+	int resending = 0;
 	
 	while(1){
 
@@ -98,6 +100,7 @@ int main (int argc, char *argv[])
 		if(outgoing->header.length == 0)
 		{
 			memset(outgoing->data, '\0', sizeof(outgoing->data));
+			resend++;
 		}
 
 		//implementing random checksum
@@ -114,28 +117,34 @@ int main (int argc, char *argv[])
 
 		//DONE INITIALIZING PACKET HEADER VALUES!
 		perror("preparing to send packet\n");
-		sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
-
-		// receive
-		recvfrom (sock, outgoing, sizeof(*outgoing), 0, NULL, NULL);
-
-		if(resent == 3){
-			printf("Packet was resent 3 times and failed ):\n");
-			if(read_file_name == 1)
-				printf("The offending file is the output file name ):<\n");
-			else
-				printf("The offending file is the msg O:<\n");
-			break;
-		}
 		
-		if(seq_num != outgoing->header.seq_ack)
+
+		do
 		{ //seq #'s don't match (for both filename and packet contents)
 			//resend the file
-			resent++;
+			//resent++;
 			printf("the acknowledgement numbers dont match /: \n");
-			continue;
-		}
+			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
+			// receive
+			recvfrom (sock, outgoing, sizeof(*outgoing), 0, NULL, NULL);
+
+			if(resent == 3)
+			{
+				printf("Packet was resent 3 times and failed ):\n");
+				if(read_file_name == 1)
+					printf("The offending file is the output file name ):<\n");
+				else
+					printf("The offending file is the msg O:<\n");
+				break;
+			}
+
+			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack))
+				resent++;
+			
+		}while(seq_num != outgoing->header.seq_ack);
+
+		
 		//if the code reached here, that means the ack #'s match. 
 		//it would have continued to next loop or broke if it didnt
 
