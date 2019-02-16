@@ -60,8 +60,6 @@ int main (int argc, char *argv[])
 	//flags
 	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
 	int sending_empty_packet = 0; //flag indicating whether we're sending an empty packet (initialized to no)
-
-	int resending = 0;
 	
 	while(1){
 
@@ -100,7 +98,7 @@ int main (int argc, char *argv[])
 		if(outgoing->header.length == 0)
 		{
 			memset(outgoing->data, '\0', sizeof(outgoing->data));
-			resend++;
+			resent++;
 		}
 
 		//implementing random checksum
@@ -141,7 +139,7 @@ int main (int argc, char *argv[])
 
 			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack))
 				resent++;
-			
+
 		}while(seq_num != outgoing->header.seq_ack);
 
 		
