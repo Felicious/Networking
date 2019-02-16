@@ -19,9 +19,9 @@ int main (int argc, char *argv[])
 	struct sockaddr_in serverAddr;
 	socklen_t addr_size;
 
-	if (argc != 5)
+	if (argc < 5)
 	{
-		printf ("need the port number and machine\n");
+		printf ("parameters: %s <port> <ip> <input> <output> [rand]\n");
 		return 1;
 	}
 
@@ -64,9 +64,6 @@ int main (int argc, char *argv[])
 	while(1){
 
 		//initializing packet
-		//
-
-		
 		if((read_file_name)&&(sending_empty_packet == 0)) //if you're trying to read the file name
 		{ 
 			//copy the 4th parameter(which contains the output file name)
@@ -101,6 +98,18 @@ int main (int argc, char *argv[])
 		if(outgoing->header.length == 0)
 		{
 			memset(outgoing->data, '\0', sizeof(outgoing->data));
+		}
+
+		//implementing random checksum
+		if(argc == 6)
+		{
+			//set checksum to 0 5% of the time
+			if(rand() % 100 < 5){
+				outgoing->header.checksum = 0;
+			}
+			else{
+				outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
+			} 
 		}
 
 		//DONE INITIALIZING PACKET HEADER VALUES!
