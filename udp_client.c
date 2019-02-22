@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/select.h>
+#include <time.h>
 #include "header.h"
 
 /***********
@@ -70,6 +72,9 @@ int main (int argc, char *argv[])
 	// set it up, in the beginning of the function
 	fd_set readfds;
 	fcntl(sock, F_SETFL, O_NONBLOCK);
+
+	//seed random function
+	 srand(time(0));
 	
 	while(1){
 
@@ -147,6 +152,12 @@ int main (int argc, char *argv[])
 			rv = select (sock + 1, &readfds, NULL, NULL, &tv);// sock is the socket you are using
 			if (rv == 0)
 			{// timeout, no data so resend
+				if(resent == 3)
+				{
+					printf("resent the timed out file 3 times and failed\n");
+					break;
+				}
+				resent++;
 				continue;
 			}
 
