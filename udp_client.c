@@ -154,7 +154,7 @@ int main (int argc, char *argv[])
 			rv = select (sock + 1, &readfds, NULL, NULL, &tv);// sock is the socket you are using
 			if (rv == 0)
 			{// timeout, no data so resend
-				if(resent == 3)
+				if(resent >= 3)
 				{
 					printf("resent the timed out file 3 times and failed\n");
 					break;
@@ -212,7 +212,7 @@ int main (int argc, char *argv[])
 		{ 
 			printf("starting to send empty packet\n");
 			sending_empty_packet = 1;
-			if(resent == 3){
+			if(resent >= 3){
 				break;
 			}
 			resent++;
