@@ -159,7 +159,7 @@ int main (int argc, char *argv[])
 					printf("resent the timed out file 3 times and failed\n");
 					break;
 				}
-				perror("timed out, resending packet!\n");
+				perror("timed out, resending packet: %d\n", resent);
 				resent++;
 				continue;
 			}
