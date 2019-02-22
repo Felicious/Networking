@@ -9,6 +9,8 @@
 #include <string.h>
 #include <sys/select.h>
 #include <time.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
 #include "header.h"
 
 /***********
