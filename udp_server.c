@@ -66,6 +66,12 @@ int main (int argc, char *argv[])
 		recvfrom (sock, received, sizeof(*received), 0, (struct sockaddr *)&serverStorage, &addr_size); //receive file name from client
 		perror("Received file from client\n");
 
+		//five percent chance of ignoring files sent by client
+		if(rand() % 100 < 5){
+			perror("Received but ignored file from client muahahahahaha >:D\n");
+			continue;
+		}
+
 		cksum = received->header.checksum;
 
 		received->header.checksum = 0;

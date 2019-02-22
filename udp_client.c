@@ -60,6 +60,16 @@ int main (int argc, char *argv[])
 	//flags
 	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
 	int sending_empty_packet = 0; //flag indicating whether we're sending an empty packet (initialized to no)
+
+	//set up timer stuff
+	//borrowed from TA
+	// local variablesneeded
+	struct timeval tv; //timer
+	int rv; // select returned value
+
+	// set it up, in the beginning of the function
+	fd_set readfds;
+	fcntl(sock, F_SETFL, O_NONBLOCK);
 	
 	while(1){
 
@@ -120,9 +130,25 @@ int main (int argc, char *argv[])
 		do
 		{ //seq #'s don't match (for both filename and packet contents)
 			//resend the file
-			//resent++;
-			printf("the acknowledgement numbers dont match /: \n");
+			
+
+			//initialize the timer
+			FD_ZERO(&readfds); 
+			FD_SET(sock, &readfds);
+			tv.tv_sec = 1; //how long the timer is: wait 1 second
+			tv.tv_usec = 0; //microseconds
+
 			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
+
+			//if theres no response from client in 1 second, resend
+			//time we waited for the server to respond back to us
+			// call select
+			
+			rv = select (sock + 1, &readfds, NULL, NULL, &tv);// sock is the socket you are using
+			if (rv == 0)
+			{// timeout, no data so resend
+				continue;
+			}
 
 			// receive
 			recvfrom (sock, outgoing, sizeof(*outgoing), 0, NULL, NULL);
@@ -137,8 +163,13 @@ int main (int argc, char *argv[])
 				break;
 			}
 
-			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack))
+			if(seq_num != outgoing->header.seq_ack){
+				printf("the acknowledgement numbers dont match /: \n");
+			}
+
+			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack)){
 				resent++;
+			}
 
 		}while(seq_num != outgoing->header.seq_ack);
 
