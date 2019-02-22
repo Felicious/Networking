@@ -193,8 +193,6 @@ int main (int argc, char *argv[])
 		//if the code reached here, that means the ack #'s match. 
 		//it would have continued to next loop or broke if it didnt
 
-		//a packet was sent successfully with no corruptions + mismatched ack #!
-		resent = 0;
 			
 		//if these conditions apply, then the msg from packet was sent successfully
 		if((read_file_name == 0) && (sending_empty_packet == 0)&&(outgoing->header.length > 0))
