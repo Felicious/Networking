@@ -115,7 +115,7 @@ int main (int argc, char *argv[])
 		if(outgoing->header.length == 0)
 		{
 			memset(outgoing->data, '\0', sizeof(outgoing->data));
-			resent++;
+			//resent++;
 		}
 
 		//implementing random checksum
@@ -179,10 +179,12 @@ int main (int argc, char *argv[])
 
 			if(seq_num != outgoing->header.seq_ack){
 				printf("the acknowledgement numbers dont match /: \n");
+				continue;
 			}
 
 			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack)){
 				resent++;
+				continue;
 			}
 
 		}while(seq_num != outgoing->header.seq_ack);
