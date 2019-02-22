@@ -208,12 +208,8 @@ int main (int argc, char *argv[])
 		} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
 		else if((read_file_name == 0) && (outgoing->header.length == 0))
 		{ 
-			printf("starting to send empty packet\n");
-			sending_empty_packet = 1;
-			if(resent >= 3){
-				break;
-			}
-			resent++;
+			perror("successfully sent empty packet\n");
+			break;
 			
 		}
 
