@@ -143,6 +143,7 @@ int main (int argc, char *argv[])
 			tv.tv_sec = 1; //how long the timer is: wait 1 second
 			tv.tv_usec = 0; //microseconds
 
+			printf("Ln 146: resending ~\n");
 			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 			//if theres no response from client in 1 second, resend
@@ -154,10 +155,10 @@ int main (int argc, char *argv[])
 			{// timeout, no data so resend
 				if(resent >= 3)
 				{
-					printf("Ln 159: resent the timed out file 3 times and failed\n");
+					printf("Ln 158: resent the timed out file 3 times and failed\n");
 					break;
 				}
-				printf("Ln 162: timed out, resending packet: %d\n", resent);
+				printf("Ln 161: timed out, resending packet: %d\n", resent);
 				resent++;
 				continue;
 			}
