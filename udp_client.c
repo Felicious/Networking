@@ -145,7 +145,6 @@ int main (int argc, char *argv[])
 			tv.tv_sec = 1; //how long the timer is: wait 1 second
 			tv.tv_usec = 0; //microseconds
 
-			printf("test\n");
 			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 			//if theres no response from client in 1 second, resend
@@ -165,28 +164,17 @@ int main (int argc, char *argv[])
 				continue;
 			}
 
+			//once it reaches here, it should have successfully sent
+			resent = 0;
+
 			// receive
 			recvfrom (sock, outgoing, sizeof(*outgoing), 0, NULL, NULL);
-
-			if(resent == 3)
-			{
-				printf("Packet was resent 3 times and failed ):\n");
-				if(read_file_name == 1)
-					printf("The offending file is the output file name ):<\n");
-				else
-					printf("The offending file is the msg O:<\n");
-				break;
-			}
 
 			if(seq_num != outgoing->header.seq_ack){
 				printf("the acknowledgement numbers dont match /: \n");
 				
 			}
 
-			if((outgoing->header.length == 0) && (seq_num != outgoing->header.seq_ack)){
-				resent++;
-				
-			}
 
 		}while(seq_num != outgoing->header.seq_ack);
 
