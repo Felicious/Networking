@@ -92,7 +92,7 @@ int main (int argc, char *argv[])
 		{
 			//open the file and store the message into the buffer
 			outgoing->header.length = fread(outgoing->data, 1, sizeof(outgoing->data), src); //store stuff directly into packet data
-			printf("sending the message to svr:%s \n", outgoing->data);
+			printf("Ln 95: sending the message to svr:%s \n", outgoing->data);
 		}
 		else //if(sending_empty_packet == 1) 
 		//need to send an empty packet after finish sending the output file name
@@ -130,9 +130,7 @@ int main (int argc, char *argv[])
 			} 
 		}
 
-		//DONE INITIALIZING PACKET HEADER VALUES!
-		perror("preparing to send packet\n");
-		
+		//DONE INITIALIZING PACKET HEADER VALUES!		
 
 		do
 		{ //seq #'s don't match (for both filename and packet contents)
@@ -156,10 +154,10 @@ int main (int argc, char *argv[])
 			{// timeout, no data so resend
 				if(resent >= 3)
 				{
-					printf("resent the timed out file 3 times and failed\n");
+					printf("Ln 159: resent the timed out file 3 times and failed\n");
 					break;
 				}
-				printf("timed out, resending packet: %d\n", resent);
+				printf("Ln 162: timed out, resending packet: %d\n", resent);
 				resent++;
 				continue;
 			}
@@ -186,7 +184,7 @@ int main (int argc, char *argv[])
 		//if these conditions apply, then the msg from packet was sent successfully
 		if((read_file_name == 0) && (sending_empty_packet == 0)&&(outgoing->header.length > 0))
 		{
-			printf("Yay~ sending msg of size: %d\n", outgoing->header.length);
+			printf("Ln 189: Yay~ sending msg of size: %d\n", outgoing->header.length);
 	
 		}
 		else if((read_file_name == 1)&&(sending_empty_packet == 0))
@@ -197,7 +195,7 @@ int main (int argc, char *argv[])
 		} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
 		else if((read_file_name == 0) && (outgoing->header.length == 0))
 		{ 
-			perror("successfully sent empty packet\n");
+			perror("Ln 200: successfully sent empty packet\n");
 			break;
 			
 		}
