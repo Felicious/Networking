@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
 		perror("Received file from client\n");
 
 		//five percent chance of ignoring files sent by client
-		if(rand() % 100 < 5){
+		if(rand() % 100 < 30){
 			perror("Received but ignored file from client muahahahahaha >:D\n");
 			//doesn't do anything because client should timeout
 			continue;
