@@ -133,7 +133,6 @@ int main (int argc, char *argv[])
 		{ //seq #'s don't match (for both filename and packet contents)
 			//resend the file
 			
-
 			//initialize the timer
 			FD_ZERO(&readfds); 
 			FD_SET(sock, &readfds);
@@ -152,15 +151,15 @@ int main (int argc, char *argv[])
 			{// timeout, no data so resend
 				if(resent >= 3)
 				{
-					printf("Ln 158: resent the timed out file 3 times and failed\n");
+					printf("Ln 154: resent the timed out file 3 times and failed\n");
 					break;
 				}
-				printf("Ln 161: timed out, resending packet: %d\n", resent);
+				printf("Ln 157: timed out, resending packet: %d\n", resent);
 				resent++;
 				continue;
 			}
 
-			printf("Ln 163: done checking timeout\n");
+			printf("Ln 162: done checking timeout\n");
 			//once it reaches here, it should have successfully sent
 			resent = 0;
 
@@ -173,7 +172,7 @@ int main (int argc, char *argv[])
 			}
 
 
-		}while(seq_num != outgoing->header.seq_ack);
+		}while((seq_num != outgoing->header.seq_ack) && (rv != 0));
 
 		
 		//if the code reached here, that means the ack #'s match. 
