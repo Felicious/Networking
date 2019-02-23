@@ -139,7 +139,7 @@ int main (int argc, char *argv[])
 			tv.tv_sec = 1; //how long the timer is: wait 1 second
 			tv.tv_usec = 0; //microseconds
 
-			printf("Ln 146: resending: %s \n", outgoing->data);
+			//printf("Ln 146: resending: %s \n", outgoing->data);
 			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 			//if theres no response from client in 1 second, resend
