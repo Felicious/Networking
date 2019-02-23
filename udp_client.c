@@ -172,7 +172,7 @@ int main (int argc, char *argv[])
 			}
 
 
-		}while((seq_num != outgoing->header.seq_ack) && (rv != 0));
+		}while((seq_num != outgoing->header.seq_ack) || (rv != 0));
 
 		
 		//if the code reached here, that means the ack #'s match. 
