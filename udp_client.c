@@ -91,7 +91,7 @@ int main (int argc, char *argv[])
 		{
 			//open the file and store the message into the buffer
 			outgoing->header.length = fread(outgoing->data, 1, sizeof(outgoing->data), src); //store stuff directly into packet data
-			printf("Ln 95: sending the message to svr:%s \n", outgoing->data);
+			printf("Ln 94: sending the message to svr:%s \n", outgoing->data);
 		}
 		else //if(sending_empty_packet == 1) 
 		//need to send an empty packet after finish sending the output file name
@@ -172,7 +172,7 @@ int main (int argc, char *argv[])
 			}
 
 
-		}while((seq_num != outgoing->header.seq_ack) || (rv != 0));
+		}while(seq_num != outgoing->header.seq_ack || resent != 0);
 
 		
 		//if the code reached here, that means the ack #'s match. 
