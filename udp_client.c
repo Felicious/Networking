@@ -140,7 +140,7 @@ int main (int argc, char *argv[])
 			tv.tv_sec = 1; //how long the timer is: wait 1 second
 			tv.tv_usec = 0; //microseconds
 
-			printf("Ln 146: resending ~\n");
+			printf("Ln 146: resending: %s \n", outgoing->data);
 			sendto (sock, outgoing, sizeof(*outgoing), 0, (struct sockaddr *)&serverAddr, addr_size);
 
 			//if theres no response from client in 1 second, resend
@@ -194,7 +194,7 @@ int main (int argc, char *argv[])
 		} //also would never find youself in a (0 1) situation bc that means you're sending an empty packet when you're reading from msg, which will never happen bc the send empty packet flag wont go up when reading msg  
 		else if((read_file_name == 0) && (outgoing->header.length == 0))
 		{ 
-			perror("Ln 200: successfully sent empty packet\n");
+			perror("Ln 197: successfully sent empty packet\n");
 			break;
 			
 		}
