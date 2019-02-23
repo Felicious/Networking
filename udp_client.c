@@ -59,8 +59,7 @@ int main (int argc, char *argv[])
 	
 	//stores the seq no. and checksum of the outgoing file 
 	//later, outgoing will indicate the response
-	int ack;
-	int cksum;
+
 	//flags
 	int read_file_name = 1; //flag indicating whether we're reading packet data (src) or output file name(filename) file
 	int sending_empty_packet = 0; //flag indicating whether we're sending an empty packet (initialized to no)
@@ -106,8 +105,6 @@ int main (int argc, char *argv[])
 
 		//checking checksum with yourself
 		outgoing->header.checksum = calc_checksum(outgoing, sizeof(HEADER) + outgoing->header.length);
-		cksum = outgoing->header.checksum;
-
 		
 		
 		//if the size is 0, means we reached the end of the msg or we wanna send an empty packet (flag)
@@ -163,6 +160,7 @@ int main (int argc, char *argv[])
 				continue;
 			}
 
+			printf("Ln 163: done checking timeout\n");
 			//once it reaches here, it should have successfully sent
 			resent = 0;
 
