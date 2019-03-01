@@ -25,7 +25,7 @@ int main (int argc, char *argv[])
 	//parse the costs file 
 	FILE *cost;
 
-	cost = fopen(argv[3], "rb");
+	cost = fopen(argv[1], "rb");
 	if(!cost){
 		printf("File cannot be opened\n");
 		return 0;
