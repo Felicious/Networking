@@ -25,7 +25,7 @@ int main (int argc, char *argv[])
 	//parse the costs file 
 	FILE *cost;
 
-	costs = fopen(argv[3], "rb");
+	cost = fopen(argv[3], "rb");
 	if(!cost){
 		printf("File cannot be opened\n");
 		return 0;
@@ -36,7 +36,7 @@ int main (int argc, char *argv[])
 	for(int i = 0; i < 16; i++)
 		fscanf(costs, "%d", matrix[i]);
 
-	pmatrix(matrix);
+	pmatrix(matrix, 16);
 
 	
 
