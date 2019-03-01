@@ -34,7 +34,7 @@ int main (int argc, char *argv[])
 	int matrix[16];
 
 	for(int i = 0; i < 16; i++)
-		fscanf(costs, "%d", matrix[i]);
+		fscanf(cost, "%d", matrix[i]);
 
 	pmatrix(matrix, 16);
 
