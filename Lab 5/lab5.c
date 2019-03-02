@@ -31,12 +31,14 @@ int main (int argc, char *argv[])
 		return 0;
 	}
 
-	int matrix[16];
+	int matrix[4][4];
 
-	for(int i = 0; i < 16; i++)
-		fscanf(cost, "%d", matrix[i]);
+	for(int row = 0; row < 4; row++){
+		for(int col = 0; col < 4; col++)
+			fscanf(cost, "%d", matrix[row][col]);
+	}
 
-	pmatrix(matrix, 16);
+	//pmatrix(matrix, 16);
 
 	
 
