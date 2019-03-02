@@ -33,16 +33,21 @@ int main (int argc, char *argv[])
 
 	int matrix[4][4];
 
-	for(int row = 0; row < 4; row++){
-		for(int col = 0; col < 4; col++)
-			fscanf(cost, "%d", matrix[row][col]);
+	for(int row = 0; row < 4; row++)
+	{
+		printf(" %d\n",row);
+		fscanf(cost, "%d %d %d %d", &matrix[row][0], &matrix[row][1], &matrix[row][2], &matrix[row][3]);
 	}
 
-	//pmatrix(matrix, 16);
+	pmatrix(4, matrix);
+
+	//done parsing
+
+
 
 	
 
-
+	return 0;
 }
 /*
 //parse the costs file 

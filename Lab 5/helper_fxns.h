@@ -1,14 +1,12 @@
 /* helper_fxns.h */
 
-void pmatrix(int matrix[], int sz)
+//function that prints the matrix
+
+
+void pmatrix(int sz, int matrix[sz][sz])
 {
-	for(int i = 0; i < sz; i++)
+	for(int row = 0; row < sz; row++)
 	{
-		if(((i%4) == 4) || ((i%4) == 0))
-			printf("| %d ", matrix[i]);
-		else if((i%4)== 3)
-			printf("%d |\n", matrix[i]);
-		else printf("%d ");
+		printf("| %d %d %d %d |\n", matrix[row][0], matrix[row][1], matrix[row][2], matrix[row][3]);
 	}
-	
 }
