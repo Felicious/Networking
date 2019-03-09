@@ -23,12 +23,11 @@ int main (int argc, char *argv[])
 	}
 */
 	
-	int N = 4; //number of nodes
 	//make an empty adjacency matrix to store our cost matrix
-	int cost_matrix[N][N];
+	int cost_matrix[4][4];
 
 	//parse cost.txt and store into cost matrix
-	init_matrix(cost_matrix[N][N], N);
+	init_matrix(cost_matrix[4][4], 4);
 
 
 
