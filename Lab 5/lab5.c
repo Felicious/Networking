@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <string.h>
-#include "helper_fxns.h"
+#include "matrices.h"
 
 /***********
  *  main
