@@ -4,7 +4,7 @@
 /*matrices.c*/
 
 /* prints the matrix */
-void pmatrix(int matrix[sz][sz], int sz)
+void pmatrix(int matrix[int sz][int sz], int sz)
 {
 	for(int row = 0; row < sz; row++)
 	{
@@ -13,7 +13,7 @@ void pmatrix(int matrix[sz][sz], int sz)
 }
 
 
-void init_matrix(int matrix[N][N], int N)
+void init_matrix(int matrix[int N][int N], int N)
 {
 	FILE *cost;
 
