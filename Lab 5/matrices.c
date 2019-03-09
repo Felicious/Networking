@@ -13,11 +13,11 @@ void pmatrix(int sz, int matrix[sz][sz])
 }
 
 
-void init_matrix(int N, int matrix[N][N])
+void init_matrix(int N, int matrix[N][N], char argv)
 {
 	FILE *cost;
 
-	cost = fopen(argv[1], "rb");
+	cost = fopen(argv, "rb");
 	if(!cost){
 		printf("File cannot be opened\n");
 		return 0;
