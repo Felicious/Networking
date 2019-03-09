@@ -22,26 +22,14 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 */
-	//parse the costs file 
-	FILE *cost;
+	
+	int N = 4; //number of nodes
+	//make an empty adjacency matrix to store our cost matrix
+	int cost_matrix[N][N];
 
-	cost = fopen(argv[1], "rb");
-	if(!cost){
-		printf("File cannot be opened\n");
-		return 0;
-	}
+	//parse cost.txt and store into cost matrix
+	init_matrix(cost_matrix[N][N], N);
 
-	int matrix[4][4];
-
-	for(int row = 0; row < 4; row++)
-	{
-		printf(" %d\n",row);
-		fscanf(cost, "%d %d %d %d", &matrix[row][0], &matrix[row][1], &matrix[row][2], &matrix[row][3]);
-	}
-
-	pmatrix(4, matrix);
-
-	//done parsing
 
 
 
