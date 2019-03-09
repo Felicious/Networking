@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "matrices.h"
+#include "dijkstra.h"
 
 /***********
  *  main
@@ -26,7 +27,10 @@ int main (int argc, char *argv[])
 	//make an empty adjacency matrix to store our cost matrix
 	int cost_matrix[4][4]; //this is the neighbor cost matrix
 
-	init_matrix(4, cost_matrix, argv[1]);
+	int flag = 1;
+	init_matrix(4, cost_matrix, argv[1], flag);
+	if(flag == 0)
+		return 0;
 
 
 

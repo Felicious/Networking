@@ -13,14 +13,14 @@ void pmatrix(int sz, int matrix[sz][sz])
 }
 
 
-void init_matrix(int N, int matrix[N][N], char *argv)
+void init_matrix(int N, int matrix[N][N], char *argv, int *flag)
 {
 	FILE *cost;
 
 	cost = fopen(argv, "rb");
 	if(!cost){
 		printf("File cannot be opened\n");
-		exit(1);
+		*flag = 0;
 	}
 
 	for(int row = 0; row < N; row++)
