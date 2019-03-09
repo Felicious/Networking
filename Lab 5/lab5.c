@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 	int cost_matrix[4][4];
 
 	//parse cost.txt and store into cost matrix
-	init_matrix(cost_matrix[4][4], 4);
+	init_matrix(4, cost_matrix[4][4]);
 
 
 
