@@ -20,7 +20,7 @@ void init_matrix(int N, int matrix[N][N], char *argv)
 	cost = fopen(argv, "rb");
 	if(!cost){
 		printf("File cannot be opened\n");
-		return 0;
+		exit(1);
 	}
 
 	for(int row = 0; row < N; row++)
