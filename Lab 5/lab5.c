@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 */
 	
 	//make an empty adjacency matrix to store our cost matrix
-	int matrix[4][4]; //this is the neighbor cost matrix
+	int cost_matrix[4][4]; //this is the neighbor cost matrix
 
 	init_matrix(4, cost_matrix);
 
