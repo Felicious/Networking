@@ -25,13 +25,29 @@ int main (int argc, char *argv[])
 */
 	
 	//make an empty adjacency matrix to store our cost matrix
+	FILE fp = fopen(argv[4], "r");
+	Automata* nineS = init_matrix(fp); //this calls malloc and returns a matrix
+
+	if(!nineS){
+		printf("Problem opening file or storing matrix\n");
+		return 0; 
+	}
+
+	//print the automata to see what's up
+	pmatrix(nineS);
+
+	
+
+
+
+
 	int cost_matrix[4][4]; //this is the neighbor cost matrix
 
 	int flag = 1;
 	init_matrix(4, cost_matrix, argv[1], flag);
 	if(flag == 0)
 		return 0;
-	
+
 
 
 

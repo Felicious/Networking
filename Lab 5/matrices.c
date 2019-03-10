@@ -9,12 +9,18 @@
 /*matrices.c*/
 
 /* prints the matrix */
-void pmatrix(int sz, int matrix[sz][sz])
+void pmatrix(Map* mrix)
 {
+	//when dealing with cost table, remember to lock it first
+	int** matrix = pthread_mutex_lock(mrix->lock);
+
 	for(int row = 0; row < sz; row++)
 	{
 		printf("| %d %d %d %d |\n", matrix[row][0], matrix[row][1], matrix[row][2], matrix[row][3]);
 	}
+
+	//unlock
+	pthread_mutex_unlock(mrix->lock);
 }
 
 //function that parses the cost matrix from file
