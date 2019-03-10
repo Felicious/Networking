@@ -31,6 +31,7 @@ int main (int argc, char *argv[])
 	init_matrix(4, cost_matrix, argv[1], flag);
 	if(flag == 0)
 		return 0;
+	
 
 
 

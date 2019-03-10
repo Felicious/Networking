@@ -1,11 +1,25 @@
-/* matrices.h */
+#ifndef MATRICES_H
+#define MATRICES_H
+
+#include <pthread.h>
+#include <stdio.h>
+
+//cost table (matrix and the mutex)
+typedef struct {
+	int ** matrix; // cost table whose changes have been made 
+
+	pthread_mutex_t* lock;
+} Map; 
+
+//function that parses the cost matrix from file
+//returns cost table 
+int** init_matrix(FILE *fp);
 
 //function that prints the matrix
 void pmatrix(int sz, int matrix[sz][sz]);
 
-//function that parses the cost matrix 
-void init_matrix(int N, int matrix[N][N], char *argv, int *flag);
-
 //dijkstra's algorithm implementation
-void dijkstra(int graph[V][V], int src);
+//passes in a costs table and the source (machine who)
+void nier(int matrix[V][V], int src);
 
+#endif

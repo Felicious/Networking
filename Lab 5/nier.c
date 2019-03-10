@@ -1,17 +1,21 @@
+#ifndef NIER_H
+#define NIER_H
+
 #include "matrices.h"
 
 // Dijkstra's shortest path algorithm using adjacency matrix 
-void dijkstra(int graph[V][V], int src) 
+//used to get the least costs matrix from neighbors
+void nier(int graph[V][V], int src) 
 { 
      int dist[V];     // The output array.  dist[i] will hold the shortest 
                       // distance from src to i 
    
-     bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest 
+     bool visited[V]; // visited[i] will be true if vertex i is included in shortest 
                      // path tree or shortest distance from src to i is finalized 
    
      // Initialize all distances as INFINITE and stpSet[] as false 
      for (int i = 0; i < V; i++) 
-        dist[i] = INT_MAX, sptSet[i] = false; 
+        dist[i] = INT_MAX, visited[i] = false; 
    
      // Distance of source vertex from itself is always 0 
      dist[src] = 0; 
@@ -21,7 +25,7 @@ void dijkstra(int graph[V][V], int src)
      { 
        // Pick the minimum distance vertex from the set of vertices not 
        // yet processed. u is always equal to src in the first iteration. 
-       int u = minDistance(dist, sptSet); 
+       int u = minDistance(dist, visited); 
    
        // Mark the picked vertex as processed 
        sptSet[u] = true; 
@@ -37,6 +41,7 @@ void dijkstra(int graph[V][V], int src)
             dist[v] = dist[u] + graph[u][v]; 
      } 
    
-     // print the constructed distance array 
-     printSolution(dist, V); 
+     return(); 
 } 
+
+#endif

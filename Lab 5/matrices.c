@@ -1,4 +1,9 @@
 #include <stdio.h>
+#include <limits.h>
+#include <pthread.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "matrices.h"
 
 /*matrices.c*/
@@ -12,19 +17,26 @@ void pmatrix(int sz, int matrix[sz][sz])
 	}
 }
 
-
-void init_matrix(int N, int matrix[N][N], char *argv, int *flag)
+//function that parses the cost matrix from file
+//returns cost table 
+int** init_matrix(FILE *cost)
 {
-	FILE *cost;
+	//whenever u make a matrix, u malloc
+	//so matrix still exists outside of fxn
+	int **matrix = (int **)malloc(4*sizeof(int*));
 
-	cost = fopen(argv, "rb");
-	if(!cost){
-		printf("File cannot be opened\n");
-		*flag = 0;
+	//allocate mem space for inner array in adjacency matrix
+	for (int i = 0; i< 4; i++){
+		matrix[i] = (int **)malloc(4*sizeof(int*));
 	}
 
+	//read file and read values into 
 	for(int row = 0; row < N; row++)
 	{
 		fscanf(cost, "%d %d %d %d", &matrix[row][0], &matrix[row][1], &matrix[row][2], &matrix[row][3]);
 	}
+
+	fclose(cost);
+
+	return matrix;
 }
