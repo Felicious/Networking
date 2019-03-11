@@ -9,12 +9,18 @@
 #include "matrices.h"
 #include "dijkstra.h"
 
+
+// Global variable
+pthread_mutex_t lock;
+
 /***********
  *  main
  ***********/
 int main (int argc, char *argv[])
 {
 	perror("Top of the program!\n");
+
+	pthread_mutex_init(&lock,NULL);
 
 /*
 	if (argc < 5)

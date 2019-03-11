@@ -7,11 +7,10 @@
 
 // our node (called automata)object
 typedef struct {
-	int index; //node's index 
-	char name[10];
+	char name[50];
 	char ip_addr[50];
 	int port_no;
-} Automata; 
+}Automata; 
 
 //between each of our automata, we have shared connection of matrices
 typedef struct {

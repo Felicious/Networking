@@ -6,21 +6,41 @@
 
 #include "matrices.h"
 
+extern pthread_mutex_t lock;
+
 /*matrices.c*/
 
+
+//update matrix (map function)
+void new_map_data(int** Map, int* data){
+	//when dealing with cost table, remember to lock it first
+	pthread_mutex_lock(&lock);
+
+	//set both directions: from src and to src to cost 
+	Map[data[0]][data[1]] = data[2];
+	Map[data[1]][data[0]] = data[2];
+
+	pthread_mutex_unlock(&lock);
+
+	printf("\nNew map data obtained from Operator:\n");
+	pmatrix(Map);
+
+}
+
+
 /* prints the matrix */
-void pmatrix(Map* mrix)
+void pmatrix(int** Map)
 {
 	//when dealing with cost table, remember to lock it first
-	int** matrix = pthread_mutex_lock(mrix->lock);
+	pthread_mutex_lock(&lock);
 
-	for(int row = 0; row < sz; row++)
+	for(int row = 0; row < 4; row++)
 	{
-		printf("| %d %d %d %d |\n", matrix[row][0], matrix[row][1], matrix[row][2], matrix[row][3]);
+		printf("| %d %d %d %d |\n", Map[row][0], Map[row][1], Map[row][2], Map[row][3]);
 	}
 
 	//unlock
-	pthread_mutex_unlock(mrix->lock);
+	pthread_mutex_unlock(&lock);
 }
 
 //function that parses the cost matrix from file
@@ -32,7 +52,7 @@ int** init_matrix(FILE *cost)
 	int **matrix = (int **)malloc(4*sizeof(int*));
 
 	//allocate mem space for inner array in adjacency matrix
-	for (int i = 0; i< 4; i++){
+	for (int i = 0; i < 4; i++){
 		matrix[i] = (int **)malloc(4*sizeof(int*));
 	}
 
@@ -46,3 +66,4 @@ int** init_matrix(FILE *cost)
 
 	return matrix;
 }
+

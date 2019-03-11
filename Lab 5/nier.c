@@ -2,46 +2,64 @@
 #define NIER_H
 
 #include "matrices.h"
+#include "nier.h"
 
-// Dijkstra's shortest path algorithm using adjacency matrix 
-//used to get the least costs matrix from neighbors
-void nier(int graph[V][V], int src) 
+extern pthread_mutex_t lock;
+
+int find_shortest(int *paths, int &visited)
+{
+  int min = INT_MAX;
+  int index_min;
+
+  //find min distance between each node
+  for (int i = 0; i < 4; ++i) {
+        if (visited[i] == 0 && paths[i] <= min) {
+            min = paths[i];
+            index_min = i;
+        }
+  }
+
+  return index_min;
+}
+
+// Dijkstra's shortest path algorithm using adjacency Map 
+//used to get the least costs Map from neighbors
+//returns the least cost array 
+int* nier(int **Map, int access_pt) 
 { 
-     int dist[V];     // The output array.  dist[i] will hold the shortest 
-                      // distance from src to i 
-   
-     bool visited[V]; // visited[i] will be true if vertex i is included in shortest 
-                     // path tree or shortest distance from src to i is finalized 
-   
-     // Initialize all distances as INFINITE and stpSet[] as false 
-     for (int i = 0; i < V; i++) 
-        dist[i] = INT_MAX, visited[i] = false; 
-   
-     // Distance of source vertex from itself is always 0 
-     dist[src] = 0; 
-   
-     // Find shortest path for all vertices 
-     for (int count = 0; count < V-1; count++) 
-     { 
-       // Pick the minimum distance vertex from the set of vertices not 
-       // yet processed. u is always equal to src in the first iteration. 
-       int u = minDistance(dist, visited); 
-   
-       // Mark the picked vertex as processed 
-       sptSet[u] = true; 
-   
-       // Update dist value of the adjacent vertices of the picked vertex. 
-       for (int v = 0; v < V; v++) 
-   
-         // Update dist[v] only if is not in sptSet, there is an edge from  
-         // u to v, and total weight of path from src to  v through u is  
-         // smaller than current value of dist[v] 
-         if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX  
-                                       && dist[u]+graph[u][v] < dist[v]) 
-            dist[v] = dist[u] + graph[u][v]; 
-     } 
-   
-     return(); 
-} 
+    //lock Map involved 
+    pthread_mutex_lock(&lock);
 
-#endif
+    //make a new cost table that contains the least dist
+    int *paths = (int*) malloc(4 * sizeof(int));
+    // initialize to max value
+    for (int i = 0; i < 4; i++){
+      paths[i] = INT_MAX;
+    }
+
+    //mark all as unvisited initially
+    int visited[4] = {0};
+
+    // distance to itself is always 0
+    paths[access_pt] = 0;
+
+    for (int i = 0; i < 4; ++i) {
+        int index = find_shortest(paths, visited);
+        visited[index] = 1;
+
+        for (int j = 0; j < 4; ++j) {
+            if (!visited[j]            // have not visited
+                && Map[index][j] && paths[index] < 10000 // is a neighbor
+                // distance to closest + curr node is less than the curr node
+                && paths[index] + Map[index][j] < paths[j]) {
+                    paths[j] = paths[index] + Map[index][j];
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&lock);
+
+    return paths;
+}
+
+//update 
