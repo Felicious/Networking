@@ -6,12 +6,26 @@
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <string.h>
-#include "matrices.h"
-#include "dijkstra.h"
+#include "automata.h"
+#include "nier.h"
+#include "map.h"
+#include "threads.h"
 
 
-// Global variable
+// Global variables
 pthread_mutex_t lock;
+
+typedef struct {
+	char name[50];
+	char ip_addr[50];
+	int port_no;
+}Automata; 
+
+int host_no;
+int machine_id;
+
+Automata automata[4];
+
 
 /***********
  *  main
@@ -32,7 +46,7 @@ int main (int argc, char *argv[])
 	
 	//make an empty adjacency matrix to store our cost matrix
 	FILE fp = fopen(argv[4], "r");
-	Automata* nineS = init_matrix(fp); //this calls malloc and returns a matrix
+	Automata* automata = init_matrix(fp); //this calls malloc and returns a matrix
 
 	if(!nineS){
 		printf("Problem opening file or storing matrix\n");

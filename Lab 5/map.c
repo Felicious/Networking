@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "matrices.h"
+#include "map.h"
 
 extern pthread_mutex_t lock;
 

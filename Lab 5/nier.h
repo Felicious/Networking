@@ -6,3 +6,5 @@
 
 int find_shortest(int *paths, int &visited);
 int* nier(int **Map, int access_pt);
+
+#endif

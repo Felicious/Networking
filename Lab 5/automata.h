@@ -2,24 +2,5 @@
 #define AUTOMATA_H
 
 // #include thread
-#include "matrices.h"
+#include "map.h"
 
-
-// our node (called automata)object
-typedef struct {
-	char name[50];
-	char ip_addr[50];
-	int port_no;
-}Automata; 
-
-//between each of our automata, we have shared connection of matrices
-typedef struct {
-	Automata* automaton; //current automata
-
-	Automata* automata; //all automata
-
-	int* sleep; //whether or not to sleep
-
-	
-
-}

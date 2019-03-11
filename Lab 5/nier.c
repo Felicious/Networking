@@ -1,7 +1,7 @@
 #ifndef NIER_H
 #define NIER_H
 
-#include "matrices.h"
+#include "map.h"
 #include "nier.h"
 
 extern pthread_mutex_t lock;
