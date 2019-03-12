@@ -11,6 +11,7 @@
 extern int host_no;
 extern int machine_id;
 extern map_database[4][4];
+extern Automata automata[4];
 // our node (called automata)object
 
 
@@ -32,6 +33,9 @@ of initialization procedures for est. connections
 */
 void* A2(void* arg);
 
+//helper function for thread 2
+void Pod_042(int *data, int machine);
+
 /*
 THREAD # 2
 Sender thread
@@ -41,6 +45,7 @@ Automata, even following her death ):
 
 */
 void TwoB();
+
 
 /*
 THREAD # 3
