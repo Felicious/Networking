@@ -15,6 +15,6 @@ void init_matrix(FILE *cost);
 void pmatrix(int** Map);
 
 //update matrix (map function)
-void new_map_data(int** Map, int* data);
+void new_map_data(int* data);
 
 #endif

@@ -51,7 +51,10 @@ void* A2(void* arg)
             (struct sockaddr *)&serverStorage, &addr_size);
         printf("Received message: [%d %d %d]", response[0], response[1], response[2]);
 
-        new_map_data();
-
+        //send response to function that updates 
+        //cost matrix information
+        new_map_data(response);
+        printf("Received and updated matrix: \n");
+        pmatrix(map_database);
     }
 } 

@@ -12,18 +12,18 @@ extern pthread_mutex_t lock;
 
 
 //update matrix (map function)
-void new_map_data(int** Map, int* data){
+void new_map_data(int* data){
 	//when dealing with cost table, remember to lock it first
 	pthread_mutex_lock(&lock);
 
 	//set both directions: from src and to src to cost 
-	Map[data[0]][data[1]] = data[2];
-	Map[data[1]][data[0]] = data[2];
+	map_database[data[0]][data[1]] = data[2];
+	map_database[data[1]][data[0]] = data[2];
 
 	pthread_mutex_unlock(&lock);
 
 	printf("\nNew map data obtained from Operator:\n");
-	pmatrix(Map);
+	pmatrix(map_database);
 
 }
 
@@ -47,11 +47,11 @@ void pmatrix(int** Map)
 //returns cost table 
 void init_matrix(FILE *cost)
 {
-
-	if(!map_database){
-		printf("Problem storing matrix\n");
+	if(!cost){
+		printf("Problem opening matrix gile\n");
 		return 0; 
 	}
+
 	//read file and read values into 
 	for(int row = 0; row < host_no; row++)
 	{

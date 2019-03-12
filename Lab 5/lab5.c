@@ -48,34 +48,31 @@ int main (int argc, char *argv[])
 	
 	//make an empty adjacency matrix to store our cost matrix
 	FILE fp = fopen(argv[3], "r");
-	if(fp == NULL){
-		printf("Problem opening cost matrix file!\n");
-		return 0;
-	}
 	
 	//copies values from file into global map_database
 	init_matrix(fp); 
 
 	
+	char* end; //used to check if conversion failed
+	machine_id = strtol(argv[1], &end, 10);
+	if(machine_id > 3 || end <= argv[1]){
+		printf("Machine ID should be between 0 and 3 ):\n");
+		return 0;
+	}
 
-	machine_id = atoi(argv[1]);
-
+	//create automatas
 	FILE fpp = fopen(argv[4], "r");
 	
+	srand(time(NULL));
 
+	printf("time to spawn threads! \n");
 
+	pthread_t receiver_A2;
+	printf("creating A2 receiver thread");
+    pthread_create(&receiver_A2, NULL, A2, NULL);
 
-	
+	pthread_t updater_9S;
 
-
-
-
-	int cost_matrix[4][4]; //this is the neighbor cost matrix
-
-	int flag = 1;
-	init_matrix(4, cost_matrix, argv[1], flag);
-	if(flag == 0)
-		return 0;
 
 
 

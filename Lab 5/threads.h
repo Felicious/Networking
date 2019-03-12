@@ -10,7 +10,7 @@
 
 extern int host_no;
 extern int machine_id;
-extern Automata automata[4];
+extern map_database[4][4];
 // our node (called automata)object
 
 
