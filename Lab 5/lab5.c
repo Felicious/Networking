@@ -25,6 +25,8 @@ int host_no;
 int machine_id;
 
 Automata automata[4];
+//global cost matrix
+int map_database[4][4];
 
 
 /***********
@@ -45,16 +47,23 @@ int main (int argc, char *argv[])
 */
 	
 	//make an empty adjacency matrix to store our cost matrix
-	FILE fp = fopen(argv[4], "r");
-	Automata* automata = init_matrix(fp); //this calls malloc and returns a matrix
-
-	if(!nineS){
-		printf("Problem opening file or storing matrix\n");
-		return 0; 
+	FILE fp = fopen(argv[3], "r");
+	if(fp == NULL){
+		printf("Problem opening cost matrix file!\n");
+		return 0;
 	}
+	
+	//copies values from file into global map_database
+	init_matrix(fp); 
 
-	//print the automata to see what's up
-	pmatrix(nineS);
+	
+
+	machine_id = atoi(argv[1]);
+
+	FILE fpp = fopen(argv[4], "r");
+	
+
+
 
 	
 

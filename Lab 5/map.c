@@ -45,25 +45,22 @@ void pmatrix(int** Map)
 
 //function that parses the cost matrix from file
 //returns cost table 
-int** init_matrix(FILE *cost)
+void init_matrix(FILE *cost)
 {
-	//whenever u make a matrix, u malloc
-	//so matrix still exists outside of fxn
-	int **matrix = (int **)malloc(4*sizeof(int*));
 
-	//allocate mem space for inner array in adjacency matrix
-	for (int i = 0; i < 4; i++){
-		matrix[i] = (int **)malloc(4*sizeof(int*));
+	if(!map_database){
+		printf("Problem storing matrix\n");
+		return 0; 
 	}
-
 	//read file and read values into 
-	for(int row = 0; row < N; row++)
+	for(int row = 0; row < host_no; row++)
 	{
-		fscanf(cost, "%d %d %d %d", &matrix[row][0], &matrix[row][1], &matrix[row][2], &matrix[row][3]);
+		fscanf(cost, "%d %d %d %d", &map_database[row][0], &map_database[row][1], &map_database[row][2], &map_database[row][3]);
 	}
+
+	printf("Initialized cost matrix: \n");
+	pmatrix(map_database);
 
 	fclose(cost);
-
-	return matrix;
 }
 

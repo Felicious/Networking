@@ -40,6 +40,18 @@ void* A2(void* arg)
 		printf("bind error\n");
 	}	
 
+    int response[3];
+
     //listening loop!
-    
+    while(1)
+    {
+        printf("Waiting for response msg\n");
+
+        recvfrom(sock, response, sizeof(response), 0,
+            (struct sockaddr *)&serverStorage, &addr_size);
+        printf("Received message: [%d %d %d]", response[0], response[1], response[2]);
+
+        new_map_data();
+
+    }
 } 
