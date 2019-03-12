@@ -16,3 +16,18 @@ void automata_config(FILE *fpp){
     fclose(fpp);
 
 }
+
+//function that sets random range for automata to sleep
+//falls under one of the automata behaviors
+size_t rest(size_t low, size_t high) {
+    // persists between diff function operations
+    static int init = 0;
+
+    // call srand only first time
+    if (!init) {
+        srand(time(0)); 
+        init = 1;
+    }
+
+    return rand() % (high + 1 - low) + low;
+}

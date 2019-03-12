@@ -32,5 +32,27 @@ of initialization procedures for est. connections
 */
 void* A2(void* arg);
 
+/*
+THREAD # 2
+Sender thread
+
+Called 2B because she perpetuates the story in Nier
+Automata, even following her death ):
+
+*/
+void TwoB();
+
+/*
+THREAD # 3
+Updater thread
+
+Repeats forever, following random delays, runs the
+algo to update the least path
+
+It's called NineS because 9S supports 2B in Nier, &
+the updater thread updates and maintains the matrix
+to provide useful info for the algorithm's use.
+*/
+void* NineS(void* arg);
 
 #endif

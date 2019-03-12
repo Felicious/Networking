@@ -74,6 +74,16 @@ int main (int argc, char *argv[])
 	pthread_t updater_9S;
 
 
+	int data[3]; //this is the cost update 
+	data[0] = machine_id;
+	//identify which machine is running
+	printf("Machine %d Initialized\n", machine_id);
+	while(1){
+		
+		sleep(10);
+	}
+
+
 
 
 
