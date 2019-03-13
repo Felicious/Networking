@@ -167,7 +167,11 @@ void TwoB(){
         new_map_data(map);
 
         //send new map
-        pod_042(map, machine);
+        Pod_042(map, machine);
+    }
+    //sleep for 30 more seconds
+    //2B don't sleep forever, ok? ):
+    sleep(30);
 
 		
 

@@ -72,37 +72,22 @@ int main (int argc, char *argv[])
     pthread_create(&receiver_A2, NULL, A2, NULL);
 
 	pthread_t updater_9S;
+	pthread_create(&updater_9S, NULL, NineS, NULL);
 
+	//read the changes 
+	TwoB();
 
-	int data[3]; //this is the cost update 
-	data[0] = machine_id;
-	//identify which machine is running
-	printf("Machine %d Initialized\n", machine_id);
-	while(1){
-		
-		sleep(10);
-	}
+	//join threads together 
+	// join other threads
+    if (pthread_join(receiver_A2, NULL)) {
+        printf("Failed to join receiver: A2\n");
+        return 1;
+    }
 
-
-
-
-
-
-
+    if (pthread_join(updater_9S, NULL)) {
+        printf("Failed to join updater: 9S\n");
+        return 1;
+    }
 	
-
 	return 0;
 }
-/*
-//parse the costs file 
-fopen
-scanf
-//initialize matrix
-
-
-//send msgs using array of strings size 3
-Thread 2 calls receive from multiple times and update cost matrix
-
-Thread 3 link state algo
-go through matrix and compute least dist 
-*/
