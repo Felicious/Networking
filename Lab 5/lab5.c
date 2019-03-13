@@ -42,7 +42,7 @@ int main (int argc, char *argv[])
 */
 	
 	//make an empty adjacency matrix to store our cost matrix
-	FILE fp = fopen(argv[3], "r");
+	FILE *fp = fopen(argv[3], "r");
 	
 	//copies values from file into global map_database
 	init_matrix(fp); 
@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
 	}
 
 	//create automatas
-	FILE fpp = fopen(argv[4], "r");
+	FILE *fpp = fopen(argv[4], "r");
 	automata_config(fpp);
 	
 	srand(time(NULL));
