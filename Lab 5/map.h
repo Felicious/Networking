@@ -4,8 +4,8 @@
 #include <pthread.h>
 #include <stdio.h>
 
-extern map_database[4][4];
-extern host_no;
+extern int map_database[4][4];
+extern int host_no;
 
 //function that parses the cost matrix from file
 //returns cost table 

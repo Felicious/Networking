@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <stdio.h>
 
-extern machine_id;
+extern int machine_id;
 
 int find_shortest(int *paths, int &visited);
 int* nier(int **Map, int access_pt);
