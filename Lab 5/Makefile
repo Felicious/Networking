@@ -10,7 +10,7 @@ main: $(OBJ)
 	$(CC) $(CFLAGS) -o lab5 $(OBJ)
 
 # compiling
-lab5.o: lab5.c automata. map.h nier.h threads.h
+lab5.o: lab5.c automata.h map.h nier.h threads.h
 	$(CC) $(CFLAGS) -c lab5.c
 
 automata.o: automata.h
