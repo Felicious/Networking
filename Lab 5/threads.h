@@ -37,7 +37,7 @@ of initialization procedures for est. connections
 void* A2(void* arg);
 
 //helper function for thread 2
-void Pod_042(int *data, int machine);
+void Pod_042(int *data, Automata machine);
 
 /*
 THREAD # 2

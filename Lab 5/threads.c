@@ -75,16 +75,16 @@ Pod 042 is suitable bc he is like the interactive
 radio between the moon base's operator and 2B, and 
 also gives her on-ground advice 
 */
-void Pod_042(int *data, int machine){
+void Pod_042(int *data, Automata machine){
     int sock;
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
 
     // configure address
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port   = htons(target->port_no);
+    serverAddr.sin_port   = htons(automata[machine].port_no);
     //take the ip address of the automata you're sending from
-    inet_pton(AF_INET, automata[machine]->ip, &serverAddr.sin_addr.s_addr);
+    inet_pton(AF_INET, automata[machine].ip, &serverAddr.sin_addr.s_addr);
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));  
     addr_size = sizeof serverAddr;
 
@@ -96,7 +96,7 @@ void Pod_042(int *data, int machine){
     }
 
     printf("sending new map [%d %d %d] to %d",
-        data[0], data[1], data[2], automata[machine]->id);
+        data[0], data[1], data[2], automata[machine].id);
 
     // message size is 3 * int
     if (sendto(sock, data, 3 * sizeof(int), 0,
@@ -119,7 +119,7 @@ how much information is shared to 2B
 void Operator6O(Automata* automata, int* map){
     Automata machines[4];
     //id of the current machine we're on
-   // ???? int current_id = automata[machine]->id; 
+   int current_id = automata[machine].id; 
     for(int i = 0; i < 4; ++i){
         if(i == current_id){
             continue;
