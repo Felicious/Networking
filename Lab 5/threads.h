@@ -9,11 +9,13 @@
 #include <sys/socket.h>
 #include "automata.h"
 #include "nier.h"
+#include "map.h"
 
 extern int host_no;
 extern int machine_id;
 extern int map_database[4][4];
 // our node (called automata)object
+extern pthread_mutex_t lock;
 
 
 /*

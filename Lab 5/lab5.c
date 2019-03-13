@@ -12,8 +12,7 @@
 #include "threads.h"
 
 
-// Global variables
-pthread_mutex_t lock;
+/*Globals */
 
 
 int host_no;

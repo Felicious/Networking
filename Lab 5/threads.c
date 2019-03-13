@@ -1,5 +1,8 @@
 #include "threads.h"
 
+// Global variables
+pthread_mutex_t lock;
+
 /*
 THREAD # 1
 Receive thread
@@ -27,7 +30,7 @@ void* A2(void* arg)
 
 	//establish UDP server
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(automata[machine_id].port);			//set the right port from the machine table
+	serverAddr.sin_port = htons(automata[machine_id].port_no);			//set the right port from the machine table
 	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);					//don't care where its sent from 
 	memset((char *)serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));
 	addr_size = sizeof(serverStorage);
@@ -79,7 +82,7 @@ void Pod_042(int *data, int machine){
 
     // configure address
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port   = htons(target->port);
+    serverAddr.sin_port   = htons(target->port_no);
     //take the ip address of the automata you're sending from
     inet_pton(AF_INET, automata[machine]->ip, &serverAddr.sin_addr.s_addr);
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));  
