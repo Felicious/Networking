@@ -15,11 +15,6 @@
 // Global variables
 pthread_mutex_t lock;
 
-typedef struct {
-	char name[50];
-	char ip_addr[50];
-	int port_no;
-}Automata; 
 
 int host_no;
 int machine_id;

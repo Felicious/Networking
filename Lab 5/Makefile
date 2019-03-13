@@ -1,5 +1,5 @@
 CC=gcc
-DEPS = automata.h map.h nier.h threads.h
+DEPS = automata.h map.h nier.h
 CFLAGS = -Wall -std=c99 -pthread -Wno-missing-braces
 OBJ = lab5.o automata.o threads.o nier.o map.o
 

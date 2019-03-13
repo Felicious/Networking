@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include "automata.h"
 
 extern int host_no;
 extern int machine_id;
 extern int map_database[4][4];
-extern struct Automata automata[4];
 // our node (called automata)object
 
 
