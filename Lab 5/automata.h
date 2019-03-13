@@ -11,7 +11,7 @@ typedef struct {
 	int port_no;
 } Automata; 
 
-extern struct Automata automata[4];
+extern Automata automata[4];
 extern int host_no;
 
 void automata_config(FILE *fpp);
