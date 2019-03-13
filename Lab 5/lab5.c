@@ -62,6 +62,7 @@ int main (int argc, char *argv[])
 
 	//create automatas
 	FILE fpp = fopen(argv[4], "r");
+	automata_config(fpp);
 	
 	srand(time(NULL));
 
