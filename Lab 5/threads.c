@@ -82,9 +82,9 @@ void Pod_042(int *data, Automata machine){
 
     // configure address
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port   = htons(automata[machine].port_no);
+    serverAddr.sin_port   = htons(machine.port_no);
     //take the ip address of the automata you're sending from
-    inet_pton(AF_INET, automata[machine].ip, &serverAddr.sin_addr.s_addr);
+    inet_pton(AF_INET, machine.ip, &serverAddr.sin_addr.s_addr);
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));  
     addr_size = sizeof serverAddr;
 
@@ -96,7 +96,7 @@ void Pod_042(int *data, Automata machine){
     }
 
     printf("sending new map [%d %d %d] to %d",
-        data[0], data[1], data[2], automata[machine].id);
+        data[0], data[1], data[2], machine.id);
 
     // message size is 3 * int
     if (sendto(sock, data, 3 * sizeof(int), 0,
@@ -117,15 +117,15 @@ how much information is shared to 2B
 */
 
 void Operator6O(Automata* automata, int* map){
-    Automata machines[4];
     //id of the current machine we're on
-   int current_id = automata[machine].id; 
+   int current_id = machine_id; //machine_id stores the current machine you're on globally
     for(int i = 0; i < 4; ++i){
         if(i == current_id){
             continue;
         }
 
-        Pod_042(&machines[i], map);
+        //sending map data with the automata that needs the info to be delivered to
+        Pod_042(map, &automata[i]);
     }
 }
 
@@ -170,7 +170,7 @@ void TwoB(){
         new_map_data(map);
 
         //send new map
-        Pod_042(map, machine);
+        Operator6O(map, map);
     }
     //sleep for 30 more seconds
     //2B don't sleep forever, ok? ):
