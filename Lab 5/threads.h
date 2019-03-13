@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include "automata.h"
+#include "nier.h"
 
 extern int host_no;
 extern int machine_id;

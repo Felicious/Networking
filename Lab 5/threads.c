@@ -172,13 +172,6 @@ void TwoB(){
     //sleep for 30 more seconds
     //2B don't sleep forever, ok? ):
     sleep(30);
-
-		
-
-
-
-
-    }
 }
 
 /*
@@ -196,7 +189,7 @@ void* NineS(void* arg){
     while(1){
         //let my cute bby 9S sleep (:
         size_t clk = rest(10, 20);
-        printf("Sleeping for %d seconds", clk);
+        printf("Sleeping for a few seconds", clk);
         sleep(clk);
 
         printf("Current map: \n");
