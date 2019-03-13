@@ -23,20 +23,20 @@ void new_map_data(int* data){
 	pthread_mutex_unlock(&lock);
 
 	printf("\nNew map data obtained from Operator:\n");
-	pmatrix(map_database);
+	pmatrix();
 
 }
 
 
 /* prints the matrix */
-void pmatrix(int** Map)
+void pmatrix()
 {
 	//when dealing with cost table, remember to lock it first
 	pthread_mutex_lock(&lock);
 
 	for(int row = 0; row < 4; row++)
 	{
-		printf("| %d %d %d %d |\n", Map[row][0], Map[row][1], Map[row][2], Map[row][3]);
+		printf("| %d %d %d %d |\n", map_database[row][0], map_database[row][1], map_database[row][2], map_database[row][3]);
 	}
 
 	//unlock
@@ -59,7 +59,7 @@ void init_matrix(FILE *cost)
 	}
 
 	printf("Initialized cost matrix: \n");
-	pmatrix(map_database);
+	pmatrix();
 
 	fclose(cost);
 }

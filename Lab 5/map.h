@@ -12,7 +12,7 @@ extern int host_no;
 void init_matrix(FILE *cost);
 
 //function that prints the matrix
-void pmatrix(int** Map);
+void pmatrix();
 
 //update matrix (map function)
 void new_map_data(int* data);

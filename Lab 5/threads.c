@@ -63,7 +63,7 @@ void* A2(void* arg)
         //unlock after finished 
         pthread_mutex_unlock(&lock);
         printf("Received and updated matrix: \n");
-        pmatrix(map_database);
+        pmatrix();
     }
 } 
 
@@ -196,11 +196,11 @@ void* NineS(void* arg){
         sleep(clk);
 
         printf("Current map: \n");
-        pmatrix(map_database);
+        pmatrix();
 
         int* new_map = nier(map_database, machine_id);
         printf("Least cost array (closest path):\n");
-        pmatrix(map_database);
+        pmatrix();
 
         free(new_map); //empty for next time
     }
