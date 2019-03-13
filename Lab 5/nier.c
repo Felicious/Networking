@@ -6,7 +6,7 @@
 
 extern pthread_mutex_t lock;
 
-int find_shortest(int *paths, int &visited)
+int find_shortest(int *paths, int *visited)
 {
   int min = INT_MAX;
   int index_min;
