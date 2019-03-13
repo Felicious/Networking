@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "automata.h"
 #include "nier.h"
 #include "map.h"
@@ -37,7 +38,7 @@ of initialization procedures for est. connections
 void* A2(void* arg);
 
 //helper function for thread 2
-void Pod_042(int *data, Automata machine);
+int Pod_042(int *data, Automata machine);
 
 /*
 THREAD # 2

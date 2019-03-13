@@ -25,7 +25,7 @@ int find_shortest(int *paths, int *visited)
 // Dijkstra's shortest path algorithm using adjacency Map 
 //used to get the least costs Map from neighbors
 //returns the least cost array 
-int* nier(int **Map, int access_pt) 
+int* nier(int *Map, int access_pt) 
 { 
     //lock Map involved 
     pthread_mutex_lock(&lock);

@@ -75,7 +75,7 @@ Pod 042 is suitable bc he is like the interactive
 radio between the moon base's operator and 2B, and 
 also gives her on-ground advice 
 */
-void Pod_042(int *data, Automata machine){
+int Pod_042(int *data, Automata *machine){
     int sock;
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
@@ -84,7 +84,7 @@ void Pod_042(int *data, Automata machine){
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port   = htons(machine.port_no);
     //take the ip address of the automata you're sending from
-    inet_pton(AF_INET, machine.ip, &serverAddr.sin_addr.s_addr);
+    inet_pton(AF_INET, machine.ip_addr, &serverAddr.sin_addr.s_addr);
     memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));  
     addr_size = sizeof serverAddr;
 
@@ -96,7 +96,7 @@ void Pod_042(int *data, Automata machine){
     }
 
     printf("sending new map [%d %d %d] to %d",
-        data[0], data[1], data[2], machine.id);
+        data[0], data[1], data[2], machine_id);
 
     // message size is 3 * int
     if (sendto(sock, data, 3 * sizeof(int), 0,
@@ -170,7 +170,7 @@ void TwoB(){
         new_map_data(map);
 
         //send new map
-        Operator6O(map, map);
+        Operator6O(automata, map);
     }
     //sleep for 30 more seconds
     //2B don't sleep forever, ok? ):
@@ -192,7 +192,7 @@ void* NineS(void* arg){
     while(1){
         //let my cute bby 9S sleep (:
         size_t clk = rest(10, 20);
-        printf("Sleeping for a few seconds", clk);
+        printf("Sleeping for a few seconds\n");
         sleep(clk);
 
         printf("Current map: \n");
