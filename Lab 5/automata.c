@@ -1,5 +1,7 @@
 #include "automata.h"
 
+Automata automata[4];
+
 void automata_config(FILE *fpp){
     if(fpp == NULL){
 		printf("Problem opening Automata naming file!\n");

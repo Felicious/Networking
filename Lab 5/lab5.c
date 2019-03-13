@@ -18,8 +18,6 @@ pthread_mutex_t lock;
 
 int host_no;
 int machine_id;
-
-Automata automata[4];
 //global cost matrix
 int map_database[4][4];
 
