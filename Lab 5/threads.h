@@ -19,6 +19,7 @@ extern int map_database[4][4];
 extern pthread_mutex_t lock;
 
 
+
 /*
 THREAD # 1
 Receive thread

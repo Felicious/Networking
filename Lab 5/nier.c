@@ -25,7 +25,7 @@ int find_shortest(int *paths, int *visited)
 // Dijkstra's shortest path algorithm using adjacency Map 
 //used to get the least costs Map from neighbors
 //returns the least cost array 
-int* nier(int *Map, int access_pt) 
+int* nier(int access_pt) 
 { 
     //lock Map involved 
     pthread_mutex_lock(&lock);
@@ -49,10 +49,10 @@ int* nier(int *Map, int access_pt)
 
         for (int j = 0; j < 4; ++j) {
             if (!visited[j]            // have not visited
-                && Map[index][j] && paths[index] < 10000 // is a neighbor
+                && map_database[index][j] && paths[index] < 10000 // is a neighbor
                 // distance to closest + curr node is less than the curr node
-                && paths[index] + Map[index][j] < paths[j]) {
-                    paths[j] = paths[index] + Map[index][j];
+                && paths[index] + map_database[index][j] < paths[j]) {
+                    paths[j] = paths[index] + map_database[index][j];
             }
         }
     }

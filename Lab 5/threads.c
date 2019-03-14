@@ -3,6 +3,15 @@
 // Global variables
 pthread_mutex_t lock;
 
+typedef struct {
+	char name[50];
+	char ip_addr[50];
+	int port_no;
+} Automata; 
+
+extern Automata automata[4];
+
+
 /*
 THREAD # 1
 Receive thread
@@ -75,7 +84,7 @@ Pod 042 is suitable bc he is like the interactive
 radio between the moon base's operator and 2B, and 
 also gives her on-ground advice 
 */
-int Pod_042(int *data, Automata *machine){
+int Pod_042(int *map, Automata *machine){
     int sock;
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
@@ -91,21 +100,21 @@ int Pod_042(int *data, Automata *machine){
     // create udp socket
     if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         printf("error setting up connection when sending [%d %d %d]",
-            data[0], data[1], data[2]);
+            map[0], map[1], map[2]);
         return 0;
     }
 
     printf("sending new map [%d %d %d] to %d",
-        data[0], data[1], data[2], machine_id);
+        map[0], map[1], map[2], machine_id);
 
     // message size is 3 * int
-    if (sendto(sock, data, 3 * sizeof(int), 0,
+    if (sendto(sock, map, 3 * sizeof(int), 0,
         (struct sockaddr*) &serverAddr, addr_size) == -1) {
             printf("failed sending [%d %d %d]",
-                data[0], data[1], data[2]);
+                map[0], map[1], map[2]);
             return 0;
     }
-    
+    return 1;
 }
 
 /* Another helper function for Thread 2
@@ -198,7 +207,7 @@ void* NineS(void* arg){
         printf("Current map: \n");
         pmatrix();
 
-        int* new_map = nier(map_database, machine_id);
+        int* new_map = nier(machine_id);
         printf("Least cost array (closest path):\n");
         pmatrix();
 
