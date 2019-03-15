@@ -39,7 +39,7 @@ of initialization procedures for est. connections
 void* A2(void* arg);
 
 //helper function for thread 2
-int Pod_042(int *map, Automata *machine);
+int Pod_042(int *map, int i);
 
 /*
 THREAD # 2
