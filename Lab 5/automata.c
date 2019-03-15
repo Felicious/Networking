@@ -1,5 +1,6 @@
 #include "automata.h"
 #include <stdio.h>
+#include <time.h>
 
 Automata automata[4];
 
