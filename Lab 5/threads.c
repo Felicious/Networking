@@ -54,7 +54,6 @@ void* A2(void* arg)
     {
         printf("Waiting for response msg\n");
 
-        pthread_mutex_lock(&lock);
         recvfrom(sock, response, sizeof(response), 0,
             (struct sockaddr *)&serverStorage, &addr_size);
         printf("Received message: [%d %d %d]", response[0], response[1], response[2]);
@@ -64,7 +63,6 @@ void* A2(void* arg)
         new_map_data(response);
 
         //unlock after finished 
-        pthread_mutex_unlock(&lock);
         printf("Received and updated matrix: \n");
         pmatrix();
     }
