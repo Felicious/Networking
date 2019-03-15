@@ -8,10 +8,10 @@ void automata_config(FILE *fpp){
 		return;
 	}
 
-    for(int i = 0; i < host_no; i++){
+    for(int i = 0; i < 4; i++){
         //copying data from host name file 
         //into automata data struct
-    	fscanf(fpp, "%s\t%s\t%d\n", automata[i].name, 
+    	fscanf(fpp, "%s %s %d", automata[i].name, 
             automata[i].ip_addr, &automata[i].port_no);
     }
 

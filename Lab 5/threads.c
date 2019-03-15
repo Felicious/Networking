@@ -163,9 +163,9 @@ void TwoB(){
 
         //creates map and puts it in the format neccesary
         int map[3];
-        map[0] = machine_id;
-        map[1] = machine; //from
-        map[2] = mission; //to
+        map[0] = machine_id;//from
+        map[1] = machine; //to
+        map[2] = mission; //new cost
 
         //update map
         new_map_data(map);

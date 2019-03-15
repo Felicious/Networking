@@ -15,7 +15,6 @@
 /*Globals */
 
 
-int host_no;
 int machine_id;
 //global cost matrix
 int map_database[4][4];

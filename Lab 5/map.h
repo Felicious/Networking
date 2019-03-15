@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 extern int map_database[4][4];
-extern int host_no;
 
 //function that parses the cost matrix from file
 //returns cost table 
