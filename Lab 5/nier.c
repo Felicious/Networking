@@ -1,6 +1,5 @@
-#ifndef NIER_H
-#define NIER_H
-
+#include <stdlib.h>
+#include <limits.h>
 #include "map.h"
 #include "nier.h"
 

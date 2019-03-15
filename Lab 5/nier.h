@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <stdio.h>
 
+
 extern int machine_id;
 
 int find_shortest(int *paths, int *visited);
