@@ -96,13 +96,13 @@ int Pod_042(int *map, int i){
         return 0;
     }
 
-    printf("sending new map [%d %d %d] to %d",
-        map[0], map[1], map[2], machine_id);
+    printf("sending new map [%d %d %d] to %d\n",
+        map[0], map[1], map[2], i);
 
     // message size is 3 * int
     if (sendto(sock, map, 3 * sizeof(int), 0,
         (struct sockaddr*) &serverAddr, addr_size) == -1) {
-            printf("failed sending [%d %d %d]",
+            printf("failed sending [%d %d %d]\n",
                 map[0], map[1], map[2]);
             return 0;
     }
