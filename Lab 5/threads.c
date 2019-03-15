@@ -201,7 +201,10 @@ void* NineS(void* arg){
 
         int* new_map = nier(machine_id);
         printf("Least cost array (closest path):\n");
-        pmatrix();
+        for (int i = 0; i < 4; i++){
+            printf(" [ %d ]", new_map[i]);
+        }
+        printf("\n");
 
         free(new_map); //empty for next time
     }
