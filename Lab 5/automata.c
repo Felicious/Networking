@@ -1,4 +1,5 @@
 #include "automata.h"
+#include <stdio.h>
 
 Automata automata[4];
 
