@@ -33,7 +33,7 @@ int main (int argc, char *argv[])
 
 	if (argc < 5)
 	{
-		printf ("parameters: %s <machine_id> <num_of_machines> <costs_file> <machines_file>\n");
+		printf ("parameters: %s <machine_id> <num_of_machines> <costs_file> <machines_file>\n", argv[0]);
 		return 1;
 	}
 
