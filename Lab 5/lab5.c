@@ -30,13 +30,13 @@ int main (int argc, char *argv[])
 
 	pthread_mutex_init(&lock,NULL);
 
-/*
+
 	if (argc < 5)
 	{
 		printf ("parameters: %s <machine_id> <num_of_machines> <costs_file> <machines_file>\n");
 		return 1;
 	}
-*/
+
 	
 	//make an empty adjacency matrix to store our cost matrix
 	FILE *fp = fopen(argv[3], "r");
