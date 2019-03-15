@@ -55,7 +55,7 @@ void init_matrix(FILE *cost)
 	//read file and read values into 
 	for(int row = 0; row < 4; row++){
 		for(int col = 0; col < 4; col++)
-			fscanf(cost, "%d", map_database[row][col]);
+			fscanf(cost, "%d", &map_database[row][col]);
 	}
 
 	printf("Initialized cost matrix: \n");
