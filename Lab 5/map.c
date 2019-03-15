@@ -49,7 +49,7 @@ void init_matrix(FILE *cost)
 {
 	if(!cost){
 		printf("Problem opening matrix gile\n");
-		return 0; 
+		return;
 	}
 
 	//read file and read values into 
